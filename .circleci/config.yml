@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.10.1
-  
+
 # commands:
 #   destroy-environment:
 #     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -35,6 +35,29 @@ orbs:
 #             fi
             
 jobs:
+  notify:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - slack/notify:
+          channel: 'circleci'
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*New-Run UDA-FG-CICD Pipeline Project*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
+
   build-frontend:
     docker:
       - image: cimg/node:13.8.0
@@ -86,7 +109,14 @@ jobs:
             cd frontend
             npm install
             npm run test
-                
+      - slack/notify:
+          event: fail
+          mentions: '@EngineeringTeam'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+                          
   test-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -102,6 +132,13 @@ jobs:
             cd backend
             npm install
             npm run test
+      - slack/notify:
+          event: fail
+          mentions: '@EngineeringTeam'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
             
   scan-frontend:
     docker:
@@ -302,6 +339,8 @@ jobs:
 workflows:
   default:
     jobs:
+      - notify:
+          context: slack-secrets
       - build-frontend
       - build-backend
       - test-frontend:
