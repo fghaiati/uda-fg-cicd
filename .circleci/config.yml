@@ -353,4 +353,6 @@ workflows:
       #     requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
+      - notify_on_success:
+          requires: [scan-backend , scan-frontend, test-backend, test-frontend]
       
