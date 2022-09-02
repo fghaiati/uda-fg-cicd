@@ -135,13 +135,40 @@ https://github.com/udacity/cdond-c3-projectstarter/blob/7224513b309e3cf1a34497fd
 #######################################################################
 
 
+#######################################################################
+Analyze phase, added code
+cd frontend
+npm install
+npm audit --audit-level=critical
+
 Failure because of vulnerable packages. [SCREENSHOT03]
+
+
+npm audit fix --audit-level=critical --force
+# If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+npm audit --audit-level=critical
+[SCREENSHOT03-FIXED]
+
+#######################################################################
+
+
 An alert from one of your failed builds. [SCREENSHOT04]
 Evidence in your code that:
 
 Compile errors have been fixed.
 Unit tests have been fixed.
 All critical security vulnerabilities caught by the “Analyze” job have been fixed.
+
+
+
+
+
+
+
+
+
+
+
 
 #### Utilize a configuration management tool to accomplish deployment to cloud-based servers.
 Console output of appropriate failure for infrastructure creation job (using CloudFormation). [SCREENSHOT05]
