@@ -57,7 +57,6 @@ Console output of various pre-deploy job failure scenarios:
 Build Jobs that failed because of compile errors. [SCREENSHOT01]
 
 ERROR:
-------
 > glee2@1.0.0 build /home/circleci/project/backend
 > tsc
 
@@ -73,9 +72,69 @@ FIX:
 
 #######################################################################
 
+#######################################################################
+Unit-Test phase, added code
+
+Failed unit tests. [SCREENSHOT02-backend-unit-test]
+Failed unit tests. [SCREENSHOT02-frontend-unit-test]
+
+ERROR:
+Summary of all failing tests
+ FAIL  src/modules/domain/employees/commands/handlers/employee-activator.handler.spec.ts
+  ● Employee Remover › when a user activates an employee › should activate the employee from the repository
+
+    expect(jest.fn()).toBeCalledWith(...expected)
+
+    Expected: 100
+    Received: 101
+
+    Number of calls: 1
+
+      33 | 
+      34 |       // Assert
+    > 35 |       expect(employeeRepository.findById).toBeCalledWith(100);
+         |                                           ^
+      36 |       expect(employeeRepository.save).toBeCalled();
+      37 |     });
+      38 |   });
+
+      at src/modules/domain/employees/commands/handlers/employee-activator.handler.spec.ts:35:43
+      at fulfilled (src/modules/domain/employees/commands/handlers/employee-activator.handler.spec.ts:5:58)
+
+FIX:
+    .addBearerAuth() // here is an intentional compile error. Remove the "x" and the backend should compile.
+                     // fixed by FGhaiati
 
 
-Failed unit tests. [SCREENSHOT02]
+ FAIL  src/app/components/LoadingMessage/LoadingMessage.spec.tsx (10.616s)
+  ● <LoadingMessage> › Props › message › Should render the props message
+
+    expect(received).toBeTruthy()
+
+    Received: false
+
+       9 |         const message = 'Hello!';
+      10 |         const wrapper = shallow(<LoadingMessage message={message} />);
+    > 11 |         expect(wrapper.contains(<span>{message}?</span>)).toBeTruthy(); //remove the question mark to make the test pass
+         |                                                           ^
+      12 |       });
+      13 |     });
+      14 |   });
+
+      at Object.<anonymous> (app/components/LoadingMessage/LoadingMessage.spec.tsx:11:59)
+
+
+
+Fixes URLs:
+https://github.com/udacity/cdond-c3-projectstarter/blob/7224513b309e3cf1a34497fdc8682ef4d50413d2/backend/src/modules/domain/employees/commands/handlers/employee-activator.handler.spec.ts#L22
+
+https://github.com/udacity/cdond-c3-projectstarter/blob/7224513b309e3cf1a34497fdc8682ef4d50413d2/frontend/src/app/components/LoadingMessage/LoadingMessage.spec.tsx#L11
+
+[SCREENSHOT02-FIXED]
+
+#######################################################################
+
+
 Failure because of vulnerable packages. [SCREENSHOT03]
 An alert from one of your failed builds. [SCREENSHOT04]
 Evidence in your code that:
