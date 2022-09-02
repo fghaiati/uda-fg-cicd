@@ -53,7 +53,25 @@ build stage, build-frontend & build-backend code added
 
 Console output of various pre-deploy job failure scenarios:
 
+#######################################################################
 Build Jobs that failed because of compile errors. [SCREENSHOT01]
+
+ERROR:
+------
+> glee2@1.0.0 build /home/circleci/project/backend
+> tsc
+
+src/main.ts:31:21 - error TS1005: ',' expected.
+
+31     .addBearerAuth()x // here is an intentional compile error. Remove the "x" and the backend should compile.
+                       ~
+
+FIX:
+    .addBearerAuth() // here is an intentional compile error. Remove the "x" and the backend should compile.
+                     // fixed by FGhaiati
+[SCREENSHOT01-FIXED]
+
+#######################################################################
 
 
 
