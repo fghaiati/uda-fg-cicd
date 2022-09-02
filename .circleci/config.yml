@@ -1,0 +1,41 @@
+version: 2.1
+
+jobs:
+  print_hello:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: echo helo
+
+  print_world:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: echo world
+
+  test:
+    docker:
+      - image: node:alpine
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+      - run:
+          name: "Run unit tests"
+          command: |
+            echo "docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}"
+            cd unit-testing
+            npm install
+            npm test
+
+workflows:
+  welcome:
+    jobs:
+      - print_hello
+      - print_world
+        requires:
+          - print_hello
+  unit_test:
+    jobs:
+      - test

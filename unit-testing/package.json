@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "jest": "^28.1.3"
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "echo This is npm scripts test;ls"
+  }
+}
