@@ -110,7 +110,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - notify-on-failure
+      #- notify-on-failure
 
   build-backend:
     docker:
@@ -129,7 +129,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - notify-on-failure
+      #- notify-on-failure
 
   test-frontend:
     docker:
@@ -146,7 +146,7 @@ jobs:
             cd frontend
             npm install
             npm run test
-      - notify-on-failure
+      #- notify-on-failure
                           
   test-backend:
     docker:
@@ -163,7 +163,7 @@ jobs:
             cd backend
             npm install
             npm run test
-      - notify-on-failure
+      #- notify-on-failure
             
   scan-frontend:
     docker:
@@ -179,7 +179,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      - notify-on-failure
+      #- notify-on-failure
 
   scan-backend:
     docker:
@@ -196,7 +196,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      - notify-on-failure
+      #- notify-on-failure
 
   deploy-infrastructure:
     docker:
@@ -241,8 +241,8 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
-      - destroy-environment
-      - notify-on-failure
+      #- destroy-environment
+      #- notify-on-failure
 
   configure-infrastructure:
     docker:
@@ -274,7 +274,7 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml
 
       # Here's where you will add some code to rollback on failure      
-      - destroy-environment
+      #- destroy-environment
 
   run-migrations:
     docker:
@@ -300,9 +300,9 @@ jobs:
               curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       # Here's where you will add some code to rollback on failure      
-      - destroy-environment
-      - revert-migrations
-      - notify-on-failure
+      #- destroy-environment
+      #- revert-migrations
+      #- notify-on-failure
 
 
   deploy-frontend:
@@ -344,9 +344,9 @@ jobs:
             npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure      
-      - destroy-environment
-      - revert-migrations
-      - notify-on-failure
+      #- destroy-environment
+      #- revert-migrations
+      #- notify-on-failure
                     
   deploy-backend:
     docker:
@@ -393,9 +393,9 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
 
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment
-      - revert-migrations
-      - notify-on-failure
+      #- destroy-environment
+      #- revert-migrations
+      #- notify-on-failure
 
   smoke-test:
     docker:
@@ -432,9 +432,9 @@ jobs:
             else
               return 1
             fi
-      - destroy-environment
-      - revert-migrations
-      - notify-on-failure
+      #- destroy-environment
+      #- revert-migrations
+      #- notify-on-failure
 
   cloudfront-update:
     docker:
@@ -459,9 +459,9 @@ jobs:
               --stack-name InitialStack \
               --template-file .circleci/files/cloudfront.yml \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" 
-      - destroy-environment
-      - revert-migrations
-      - notify-on-failure
+      #- destroy-environment
+      #- revert-migrations
+      #- notify-on-failure
 
   cleanup:
     docker:
@@ -491,9 +491,9 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
             fi
-      - destroy-environment
-      - revert-migrations
-      - notify-on-failure
+      #- destroy-environment
+      #- revert-migrations
+      #- notify-on-failure
 
   notify-on-success:
     docker:
@@ -507,32 +507,32 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
 
-      - deploy-frontend
-      - deploy-backend
+      # - deploy-frontend
+      # - deploy-backend
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
