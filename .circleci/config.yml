@@ -500,22 +500,28 @@ jobs:
     steps:
       - checkout
       - install-awscli
+      - aws-cli/setup:
+         profile-name: udapeople
       - run:
           name: Get old stack workflow id
           command: |
             # Fetch the Old workflow ID from kvdb.io
             export OLD_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
-            
+            echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
       - run:
           name: Remove old stacks and files
           command: |
             # Fetch the stack names          
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
 
+            export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
+            export LATEST_WORKFLOW_ID="7219dea"
+            echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
+
             # remove old stacks
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OLD_WORKFLOW_ID}" ]]
+            if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ]]
             then
               aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
@@ -568,9 +574,10 @@ workflows:
       # - smoke-test
       # - cloudfront-update:
       #     requires: [smoke-test]
-      - cloudfront-update
+      # - cloudfront-update
       # - cleanup:
       #     requires: [cloudfront-update]
+        - cleanup
       # - notify-on-success:
       #     requires: [cleanup]
           #requires: [smoke-test]
