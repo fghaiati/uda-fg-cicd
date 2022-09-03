@@ -466,9 +466,9 @@ jobs:
       - image: amazon/aws-cli #cimg/base:stable
     steps:
       - checkout
-      - install-awscli
-      - aws-cli/setup:
-          profile-name: udapeople
+      #- install-awscli
+      #- aws-cli/setup:
+      #    profile-name: udapeople
       - run:
           name: Save old workflow id to kvdb.io
           command: |
