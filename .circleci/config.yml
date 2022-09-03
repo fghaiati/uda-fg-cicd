@@ -403,8 +403,8 @@ jobs:
     steps:
       - checkout
       - install-awscli
-      # - aws-cli/setup:
-      #     profile-name: udapeople
+      - aws-cli/setup:
+          profile-name: udapeople
       - run:
           name: Get backend url & Backend smoke test
           command: |
