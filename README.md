@@ -421,10 +421,13 @@ run migration job
 - Deploy Backend production app to the configured EC2 instances
 - Deploy Frontend production static files to the S3 bucket
 
+## Smoke Test
+### Objectives
+- Smoke Test FE
+- Smoke Test BE
+- Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
+- Console output of a successful rollback after a failed smoke test. [SCREENSHOT07]
 
-Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
-
-Console output of a successful rollback after a failed smoke test. [SCREENSHOT07]
 
 Console output of successful promotion of new version to production in CloudFront. [SCREENSHOT08]
 
