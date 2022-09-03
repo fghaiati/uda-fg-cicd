@@ -1,9 +1,9 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.10.1
+  aws-cli: circleci/aws-cli@3.1.3
 
 commands:
-
   notify-on-failure:
     steps:
     - slack/notify:
@@ -44,13 +44,13 @@ commands:
           when: on_fail
           command: |
             # Empty frontend bucket
-            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
+            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --profile udapeople --recursive
 
             # Delete frontend stack
-            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >> --profile udapeople
 
             # Delete backend stack
-            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >>
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >> --profile udapeople
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
@@ -185,14 +185,8 @@ jobs:
       # Checkout code from git
       - checkout
       - install-awscli    
-
-      # - run:
-      #     name: install AWS CLI 2
-      #     command: |
-      #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      #       unzip awscliv2.zip
-      #       sudo ./aws/install
-
+      - aws-cli/setup:
+          profile-name: udapeople
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -201,6 +195,7 @@ jobs:
               --tags project=your-tag \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              --profile udapeople
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -209,12 +204,14 @@ jobs:
               --tags project=your-tag \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              --profile udapeople
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --profile udapeople \
               --output text)
             echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
