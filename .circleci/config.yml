@@ -406,7 +406,7 @@ jobs:
       - aws-cli/setup:
           profile-name: udapeople
       - run:
-          name: Get backend url
+          name: Get backend url & Backend smoke test
           command: |
             export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
 
@@ -432,12 +432,8 @@ jobs:
             echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030"
             export API_URL="http://${BACKEND_PUBLIC_IP}:3030" 
             echo "Backend Url: ${API_URL}/api/status"
-      - run:
-          name: Backend smoke test.
-          command: |
-            echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030"
-            export API_URL="http://${BACKEND_PUBLIC_IP}:3030" 
-            echo "Backend Url: ${API_URL}/api/status"
+
+            # Backend smoke test
             if curl -s ${API_URL}/api/status | grep "ok"
             then
               exit 0
@@ -447,7 +443,14 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            export FRONTEND_WEBSITE="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
+            export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
+
+            #Work on specific WorkFlow_ID
+            export FRONTEND_SUBDOMAIN="udapeople-7219dea"
+
+            echo "FRONTEND_SUBDOMAIN=${FRONTEND_SUBDOMAIN}"
+
+            export FRONTEND_WEBSITE="http://${FRONTEND_SUBDOMAIN}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
             if curl -s $FRONTEND_WEBSITE | grep "Welecome"
             then
               return 0
