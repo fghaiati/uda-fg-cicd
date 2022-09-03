@@ -412,6 +412,15 @@ jobs:
           name: Get backend url
           command: |
             echo "Backend Stack Name: udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+
+            export AWS_GET_BACKEND_PUBLIC_IP_QUERY="aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --profile udapeople \
+              --output text" 
+
+            echo "AWS_GET_BACKEND_PUBLIC_IP_QUERY: ${AWS_GET_BACKEND_PUBLIC_IP_QUERY}"
+
             export BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
