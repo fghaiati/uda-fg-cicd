@@ -402,6 +402,20 @@ In the `commands` section we add `destroy_environment` command
 Configure server Ansible playbook
 prometheus node exporter (update to latest version)
 
+[URL01]: https://github.com/fghaiati/uda-fg-cicd.git
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Deployment
+create bucket on kvdb.io using me email
+https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/
+6LGVUmfMFMbPAGkm3aLBkb
+
+curl -d '1' https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/hello
+curl https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/hello
+
+run migration job
+
+
 
 Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
 
