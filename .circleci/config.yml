@@ -523,7 +523,7 @@ jobs:
             # remove old stacks
             for i in "${STACKS[@]}"
             do
-              if [["${i:0:18}" == "udapeople-backend-"] && ["$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}"]] 
+              if ["${i:0:18}" -eq "udapeople-backend-"] # && ["$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}"]] 
               then
                 echo "remove workflow $i"
                 echo "${i:0:18}"
