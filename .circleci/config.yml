@@ -463,18 +463,18 @@ jobs:
 
   cloudfront-update:
     docker:
-      - image: amazon/aws-cli #cimg/base:stable
+      - image: cimg/base:stable
     steps:
       - checkout
-      #- install-awscli
-      #- aws-cli/setup:
-      #    profile-name: udapeople
+      - install-awscli
+      - aws-cli/setup:
+         profile-name: udapeople
       - run:
           name: Save old workflow id to kvdb.io
           command: |
             # Fetch the Old workflow ID
             export OLD_WORKFLOW_ID=$(aws cloudformation \
-              list-exports -- query "Exports[?Name==\`WorkflowID\`].Value" \
+              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
               --profile udapeople --no-paginate --output text)
 
             echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
