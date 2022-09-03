@@ -448,9 +448,10 @@ jobs:
             #Work on specific WorkFlow_ID
             export FRONTEND_SUBDOMAIN="udapeople-7219dea"
 
-            echo "FRONTEND_SUBDOMAIN=${FRONTEND_SUBDOMAIN}"
+            echo "FRONTEND_SUBDOMAIN: ${FRONTEND_SUBDOMAIN}"
 
             export FRONTEND_WEBSITE="http://${FRONTEND_SUBDOMAIN}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
+            echo "FRONTEND_WEBSITE: ${FRONTEND_WEBSITE}"
             if curl -s $FRONTEND_WEBSITE | grep "Welecome"
             then
               exit 0
