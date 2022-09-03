@@ -406,17 +406,17 @@ jobs:
       - aws-cli/setup:
           profile-name: udapeople
       - run:
-          name: Work on specific WorkFlow_ID
-          command: |
-            export CIRCLE_WORKFLOW_ID="7219dea"
-            echo "CIRCLE_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID}"
-      - run:
           name: Get backend url
           command: |
-            echo "Backend Stack Name: udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+            export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
+
+            #Work on specific WorkFlow_ID
+            export EC2_NAME="backend-7219dea"
+
+            echo "EC2_NAME=${EC2_Name}"
 
             export AWS_GET_BACKEND_PUBLIC_IP_QUERY="aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:Name,Values=${EC2_NAME}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --profile udapeople \
               --output text" 
@@ -424,7 +424,7 @@ jobs:
             echo "AWS_GET_BACKEND_PUBLIC_IP_QUERY: ${AWS_GET_BACKEND_PUBLIC_IP_QUERY}"
 
             export BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:Name,Values=${EC2_NAME}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --profile udapeople \
               --output text)
