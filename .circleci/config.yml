@@ -467,13 +467,15 @@ jobs:
     steps:
       - checkout
       - install-awscli
+      - aws-cli/setup:
+          profile-name: udapeople
       - run:
           name: Save old workflow id to kvdb.io
           command: |
             # Fetch the Old workflow ID
             export OLD_WORKFLOW_ID=$(aws cloudformation \
               list-exports -- query "Exports[?Name==\`WorkflowID\`].Value" \
-              --no-paginate --output text)
+              --profile udapeople --no-paginate --output text)
 
             echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
             curl https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "${OLD_WORKFLOW_ID}"
@@ -483,7 +485,7 @@ jobs:
             aws cloudformation deploy \
               --stack-name InitialStack \
               --template-file .circleci/files/cloudfront.yml \
-              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" 
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" --profile udaprofile 
       #- destroy-environment
       #- revert-migrations
       #- notify-on-failure
