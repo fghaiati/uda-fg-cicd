@@ -474,7 +474,7 @@ jobs:
           command: |
             # Fetch the Old workflow ID
             export OLD_WORKFLOW_ID=$(aws cloudformation \
-              list-exports -- query "Exports[?Name==\`WorkflowID\`].Value" \
+              list-exports -- query "Exports[?Name==\'WorkflowID\'].Value" \
               --profile udapeople --no-paginate --output text)
 
             echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
