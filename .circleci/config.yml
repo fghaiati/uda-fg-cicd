@@ -477,13 +477,14 @@ jobs:
               list-exports -- query "Exports[?Name=='WorkflowID'].Value" \
               --profile udapeople --no-paginate --output text)
 
-            echo "ALL_WORKFLOW_IDs: ${ALL_WORKFLOW_IDs}"
+            echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
             curl https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "${OLD_WORKFLOW_ID}"
       - run:
           name: Update cloudfront distribution
           command: |
             export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             export UPDATE_TO_WORKFLOW_ID="7219dea"
+            echo "UPDATE_TO_WORKFLOW_ID: ${UPDATE_TO_WORKFLOW_ID}"
             aws cloudformation deploy \
               --stack-name InitialStack \
               --template-file .circleci/files/cloudfront.yml \
@@ -564,11 +565,12 @@ workflows:
       # - deploy-backend
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
-      - smoke-test
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - smoke-test
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      - cloudfront-update
+      # - cleanup:
+      #     requires: [cloudfront-update]
       # - notify-on-success:
       #     requires: [cleanup]
           #requires: [smoke-test]
