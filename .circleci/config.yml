@@ -226,24 +226,37 @@ jobs:
       - destroy-environment
       - notify-on-failure
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      - image: cimg/python:3.10
+    steps:
+      # Checkout code from git
+      - checkout
+      - install-awscli
+      - install-ansible
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints: ["be:3c:fe:86:6a:6e:4d:bc:66:fe:72:cb:bb:1d:f8:3b"]
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # Your code here
+      #       exit 1
+      - run:
+          name: Configure server
+          command: |
+            # Your code here
+            cd .circleci/ansible
+            cat inventory.txt
+
+            ansible-playbook -i inventory.txt configure-server.yml
+
+      # Here's where you will add some code to rollback on failure      
+      - destroy-environment
 
 #   run-migrations:
 #     docker:
@@ -384,8 +397,8 @@ workflows:
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
@@ -399,6 +412,7 @@ workflows:
       # - cleanup:
       #     requires: [cloudfront-update]
       - notify_on_success:
-          requires: [deploy-infrastructure]
+          requires: [configure-infrastructure]
+          #requires: [deploy-infrastructure]
           #requires: [scan-backend , scan-frontend, test-backend, test-frontend]
       

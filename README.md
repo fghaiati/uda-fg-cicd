@@ -398,6 +398,9 @@ In the `commands` section we add `destroy_environment` command
 
 `.circleci/config.yml`
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Configure server Ansible playbook
+prometheus node exporter (update to latest version)
 
 
 Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
