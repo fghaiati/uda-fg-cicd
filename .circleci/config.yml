@@ -406,7 +406,7 @@ jobs:
       - run:
           name: Work on specific WorkFlow_ID
           command: |
-            export CIRCLE_WORKFLOW_ID = "7219dea"
+            export CIRCLE_WORKFLOW_ID="7219dea"
             echo "CIRCLE_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID}"
       - run:
           name: Get backend url
@@ -545,8 +545,8 @@ workflows:
           requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
-      - notify-on-success:
-          requires: [cleanup]
+      # - notify-on-success:
+      #     requires: [cleanup]
           #requires: [smoke-test]
           #requires: [deploy-frontend,deploy-backend]
           #requires: [run-migrations]
