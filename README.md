@@ -152,7 +152,44 @@ npm audit --audit-level=critical
 #######################################################################
 
 
+#######################################################################
 An alert from one of your failed builds. [SCREENSHOT04]
+orbs:
+  slack: circleci/slack@4.10.1
+
+commands:
+
+  notify_on_failure:
+    steps:
+    - slack/notify:
+        event: fail
+        template: basic_fail_1
+
+Jobs:
+  ........
+  scan-backend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - .......
+      - notify_on_failure
+
+
+  notify_on_success:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - slack/notify:
+          event: pass
+          template: success_tagged_deployment_1
+
+Workflow:
+   .....
+      - notify_on_success:
+          requires: [scan-backend , scan-frontend, test-backend, test-frontend]
+
+#######################################################################
+
 Evidence in your code that:
 
 Compile errors have been fixed.

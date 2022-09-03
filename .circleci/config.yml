@@ -8,7 +8,6 @@ commands:
     steps:
     - slack/notify:
         event: fail
-        channel: circleci
         template: basic_fail_1
 
 #   destroy-environment:
@@ -143,7 +142,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
       - notify_on_failure
@@ -319,7 +317,6 @@ jobs:
     steps:
       - slack/notify:
           event: pass
-          channel: circleci
           template: success_tagged_deployment_1
 
 workflows:
