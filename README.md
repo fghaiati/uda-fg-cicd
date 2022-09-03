@@ -415,6 +415,11 @@ curl https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/hello
 
 run migration job
 
+## Deploy To Production
+### Objectives
+
+- Deploy Backend production app to the configured EC2 instances
+- Deploy Frontend production static files to the S3 bucket
 
 
 Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
