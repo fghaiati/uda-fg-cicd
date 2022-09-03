@@ -375,7 +375,7 @@ persist inventory file to workspace
 
 backend.yml
 - added instance name ami-070650c005cce4203
-- add key name uda-fg-ssh-key
+- add key name uda-fg-cicd ssh-key
 - added not existing type 
     Type: AWS::EC2::InstanceUbuntu #to raise error resource type not exist
 
