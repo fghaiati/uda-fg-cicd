@@ -4,13 +4,13 @@ orbs:
 
 commands:
 
-  notify_on_failure:
+  notify-on-failure:
     steps:
     - slack/notify:
         event: fail
         template: basic_fail_1
 
-  install_awscli:
+  install-awscli:
     description: install AWS CLI 2
     steps:
     - name: install AWS CLI 2
@@ -19,7 +19,7 @@ commands:
         unzip awscliv2.zip
         sudo ./aws/install
 
-  install_ansible:
+  install-ansible:
     description: install ansible v2 on ubuntu
     steps:
     - name: install ansible v2 on ubuntu
@@ -29,17 +29,26 @@ commands:
         sudo add-apt-repository --yes --update ppa:ansible/ansible
         sudo apt install ansible
 
-#   destroy-environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     parameters:
-#       # Add parameter here   
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#             # Your code here
-#             exit 1
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      # Add parameter here   
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            # Empty frontend bucket
+            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
+
+            # Delete frontend stack
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
+
+            # Delete backend stack
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >>
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
@@ -78,7 +87,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - notify_on_failure
+      - notify-on-failure
 
   build-backend:
     docker:
@@ -97,7 +106,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - notify_on_failure
+      - notify-on-failure
 
   test-frontend:
     docker:
@@ -114,7 +123,7 @@ jobs:
             cd frontend
             npm install
             npm run test
-      - notify_on_failure
+      - notify-on-failure
                           
   test-backend:
     docker:
@@ -131,7 +140,7 @@ jobs:
             cd backend
             npm install
             npm run test
-      - notify_on_failure
+      - notify-on-failure
             
   scan-frontend:
     docker:
@@ -147,7 +156,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      - notify_on_failure
+      - notify-on-failure
 
   scan-backend:
     docker:
@@ -164,7 +173,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      - notify_on_failure
+      - notify-on-failure
 
   deploy-infrastructure:
     docker:
@@ -173,14 +182,14 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      #- install_awscli    
+      - install-awscli    
 
-      - run:
-          name: install AWS CLI 2
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+      # - run:
+      #     name: install AWS CLI 2
+      #     command: |
+      #       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #       unzip awscliv2.zip
+      #       sudo ./aws/install
 
       - run:
           name: Ensure back-end infrastructure exists
@@ -212,7 +221,8 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
-      - notify_on_failure
+      - destroy-environment
+      - notify-on-failure
 
 #   configure-infrastructure:
 #     docker:

@@ -379,10 +379,26 @@ backend.yml
 - added not existing type 
     Type: AWS::EC2::InstanceUbuntu #to raise error resource type not exist
 
-Add rollbackcomand to use on failure (backend.yml)
-
-
 Console output of appropriate failure for infrastructure creation job (using CloudFormation). [SCREENSHOT05]
+
+
+Add rollbackcomand to use on failure 
+## Rollback command
+
+We need to add rollback command to clean up the provisioned infrastructure in of **any failure** happening in the workflow from now on
+
+This command will take in input `Workflow_ID` which defaults to the `IDENTIFIER` value we used to create and name our stacks
+
+The steps needed are:
+
+- Empty the frontend bucket
+- Remove backend and frontend stacks
+
+In the `commands` section we add `destroy_environment` command
+
+`.circleci/config.yml`
+
+
 
 Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
 
