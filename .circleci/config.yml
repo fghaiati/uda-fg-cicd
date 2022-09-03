@@ -524,7 +524,7 @@ jobs:
             for i in "${STACKS[@]}"
             do
               # && ["$i"!="udapeople-backend-${LATEST_WORKFLOW_ID}"]
-              if [ ["$i:0:18"=="udapeople-backend-"]  ] ; 
+              if [ ["${i:0:18}"=="udapeople-backend-"] && ["${i}"!="udapeople-backend-${LATEST_WORKFLOW_ID}"] ] ; 
               then
                 echo "remove workflow $i"
                 echo "$i:0:18"
