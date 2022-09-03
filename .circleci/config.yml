@@ -525,7 +525,7 @@ jobs:
             do
               if [ "${i:0:18}" == "udapeople-backend-" && "${i}" != "udapeople-backend-${LATEST_WORKFLOW_ID}"] ; 
               then
-                echo "remove workflow ${i:18:7}"
+                echo "remove workflow $i"
                 #aws s3 rm "s3://udapeople-$i" --recursive 
                 #aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
                 #aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
