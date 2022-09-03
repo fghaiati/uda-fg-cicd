@@ -486,9 +486,9 @@ jobs:
             export UPDATE_TO_WORKFLOW_ID="7219dea"
             echo "UPDATE_TO_WORKFLOW_ID: ${UPDATE_TO_WORKFLOW_ID}"
             aws cloudformation deploy \
-              --stack-name InitialStack \
+              --stack-name InitialStack --profile udapeople\
               --template-file .circleci/files/cloudfront.yml \
-              --parameter-overrides WorkflowID="${UPDATE_TO_WORKFLOW_ID}" --profile udaprofile 
+              --parameter-overrides WorkflowID="${UPDATE_TO_WORKFLOW_ID}" 
       #- destroy-environment
       #- revert-migrations
       #- notify-on-failure
