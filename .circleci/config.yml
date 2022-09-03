@@ -403,8 +403,8 @@ jobs:
     steps:
       - checkout
       - install-awscli
-      - aws-cli/setup:
-          profile-name: udapeople
+      # - aws-cli/setup:
+      #     profile-name: udapeople
       - run:
           name: Get backend url & Backend smoke test
           command: |
@@ -453,9 +453,9 @@ jobs:
             export FRONTEND_WEBSITE="http://${FRONTEND_SUBDOMAIN}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
             if curl -s $FRONTEND_WEBSITE | grep "Welecome"
             then
-              return 0
+              exit 0
             else
-              return 1
+              exit 1
             fi
       #- destroy-environment
       #- revert-migrations
