@@ -431,6 +431,7 @@ jobs:
 
             echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030"
             export API_URL="http://${BACKEND_PUBLIC_IP}:3030" 
+            echo "Backend Url: ${API_URL}/api/status"
       - run:
           name: Backend smoke test.
           command: |
