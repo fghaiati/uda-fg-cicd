@@ -399,7 +399,6 @@ jobs:
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
       - image: cimg/base:stable
     steps:
       - checkout
@@ -407,12 +406,12 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+            export BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
 
-            export "API_URL=http://${BACKEND_PUBLIC_IP}:3030" 
+            export API_URL="http://${BACKEND_PUBLIC_IP}:3030" 
       - run:
           name: Backend smoke test.
           command: |
@@ -425,52 +424,76 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
+            export FRONTEND_WEBSITE="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com"
             if curl -s $FRONTEND_WEBSITE | grep "Welecome"
             then
-              exit 0
+              return 0
             else
-              exit 1
+              return 1
             fi
-      # Here's where you will add some code to rollback on failure  
       - destroy-environment
       - revert-migrations
       - notify-on-failure
 
-#   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  cloudfront-update:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install-awscli
+      - run:
+          name: Save old workflow id to kvdb.io
+          command: |
+            # Fetch the Old workflow ID
+            export OLD_WORKFLOW_ID=$(aws cloudformation \
+              list-exports -- query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text)
 
-# cleanup:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Get old stack workflow id
-#           command: |
-#             # your code here
-#             export OldWorkflowID="the id here"
-#             export STACKS=[] #put the list of stacks here
-#       - run:
-#           name: Remove old stacks and files
-#           command: |
-#             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
-#             then
-#               # your code here
-#             fi
+            echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
+            curl https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "${OLD_WORKFLOW_ID}"
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+              --stack-name InitialStack \
+              --template-file .circleci/files/cloudfront.yml \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" 
+      - destroy-environment
+      - revert-migrations
+      - notify-on-failur
+
+  cleanup:
+    docker:
+      # Docker image here
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install-awscli
+      - run:
+          name: Get old stack workflow id
+          command: |
+            # Fetch the Old workflow ID from kvdb.io
+            export OLD_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
             
+      - run:
+          name: Remove old stacks and files
+          command: |
+            # Fetch the stack names          
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+            echo Stack names: "${STACKS[@]}"
+
+            # remove old stacks
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OLD_WORKFLOW_ID}" ]]
+            then
+              aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
+            fi
+      - destroy-environment
+      - revert-migrations
+      - notify-on-failure
+
   notify-on-success:
     docker:
       - image: cimg/base:stable
@@ -508,12 +531,13 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
-      - notify-on-success:
+      - cloudfront-update:
           requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
+      - notify-on-success:
+          requires: [cleanup]
+          #requires: [smoke-test]
           #requires: [deploy-frontend,deploy-backend]
           #requires: [run-migrations]
           #requires: [configure-infrastructure]

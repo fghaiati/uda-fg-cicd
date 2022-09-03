@@ -428,6 +428,13 @@ run migration job
 - Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
 - Console output of a successful rollback after a failed smoke test. [SCREENSHOT07]
 
+## Promotion Cleanup
+### Objectives
+- Store last WorkflowId (consider as version) exported by initial Stack into VKDB.io to use for cleanup
+- Update inital stack cludfront distr to point to the latest frontend bucket
+- after update to new version delete all stakes releated to old version
+
+
 
 Console output of successful promotion of new version to production in CloudFront. [SCREENSHOT08]
 
