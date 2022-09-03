@@ -506,7 +506,7 @@ jobs:
           name: Get old stack workflow id
           command: |
             # Fetch the Old workflow ID from kvdb.io
-            export OLD_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
+            export OLD_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
             echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
       - run:
           name: Remove old stacks and files
