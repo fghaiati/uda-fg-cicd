@@ -1,14 +1,17 @@
-# Fathi Ghaiati
-# This is my udacity CICD project 
+# Udacity Advanced DevOps Nanodegree - Give Your Application Auto-Deploy Superpowers Project
 
-## started by simple project with .circleci config.yml 
-## pushed to github
-## created circleci project linked to this project
-## circle ci run successfully 
+By: Fathi Ghaiati
+About: This is my udacity CICD project 
 
-## udacity starter project
-## https://github.com/udacity/cdond-c3-projectstarter
-## copied folders from starter project: .circleci, frontend, backend & util
+## Starting
+started by simple project with .circleci config.yml 
+pushed to github
+created circleci project linked to this project
+circle ci run successfully 
+
+### Getting & Merging Udacity Starter Project
+URL: https://github.com/udacity/cdond-c3-projectstarter
+copied folders from starter project: .circleci, frontend, backend & util
  
 git add .
 git commit -m "copy code from udacity starter project, the following folders: .circleci, frontend, backend & util"
@@ -17,15 +20,14 @@ git push -u origin master
 ## created screenshots folder for required screenshots
 
 
-## Give Your Application Auto-Deploy Superpowers Requirements (PROJECT SPECIFICATION)
-### Section 1: Selling CI/CD to your Team/Organization
-#### Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
+## Section 1: Selling CI/CD to your Team/Organization
+### Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
 The CI/CD benefits proposal contains essential benefits of CI/CD, and describes the business context that will benefit from the automation tools. Explanation should include benefits that translate to revenue and cost for the business.
 
 
 
-### Section 2: Deploying Working, Trustworthy Software
-#### Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
+## Section 2: Deploying Working, Trustworthy Software
+### Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
 
 A public git repository with your project code. [URL01]
 https://github.com/fghaiati/uda-fg-cicd.git
@@ -145,7 +147,7 @@ Failure because of vulnerable packages. [SCREENSHOT03]
 
 
 npm audit fix --audit-level=critical --force
-# If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
 npm audit --audit-level=critical
 [SCREENSHOT03-FIXED]
 
@@ -199,15 +201,187 @@ All critical security vulnerabilities caught by the “Analyze” job have been 
 
 
 
+poweshell
+cd util docker compose up
+pgadmin connect to DB on port 5532
+
+poweshell
+node --version
+13.8.0
+cd backend
+npm install
+copy development.env .env
+npm run migrations-win
+created tables in glee database, schemas
+employee, orders, product, order_products_product, migrations
+npm start
+http://localhost:3030/api/status
+Ctrl+C
+npm run build
+create dist/set_env.bat
+cd dist
+.\set_env.bat
+node main.js
+
+poweshell
+node --version
+13.8.0
+cd frontend
+npm install
+create development.env & .env  << API_URL=http://localhost:3030
+npm start
+http://localhost:3000
+Ctrl+C
+npm run build
+export API_URL=http://localhost:3030
+npm install -g serve
+serve dist
+
+# URL: https://github.com/github/gitignore  , template of Node.gitignore
 
 
+## Section 3
+### Utilize a configuration management tool to accomplish deployment to cloud-based servers.
+Utilize a Configuration Management Tool to Accomplish Deployment to Cloud-Based Servers
+In this section, you will practice creating and configuring infrastructure before deploying code to it. You will accomplish this by preparing your AWS and CircleCI accounts just a bit, then by building Ansible Playbooks for use in your CircleCI configuration.
+
+Setup - AWS
+1- Create and download a new key pair in AWS. Name this key pair "udacity" so that it works with your Cloud Formation templates. Look for "Option 1: Create a key pair using Amazon EC2" in this tutorial, if you need help. You'll be using this key pair (pem file) in future steps so keep it in a memorable location.
+
+2- Create IAM user for programmatic access only and copy the access key id and secret access key. Refer to this tutorial, if you need help. Configure your AWS CLI to use the newly generated access keys. You'll also need these credentials to add to CircleCI configuration in the next steps.
+
+uda-fg-cicd-runner-user_credentials
+
+3- Add a PostgreSQL database in RDS that has public accessibility. This tutorial may help. As long as you marked "Public Accessibility" as "yes", you won't need to worry about VPC settings or security groups. Take note of the connection details, such as:
+
+uda-pg-db
+glee
+
+Master username
+postgres
+Master password
+DYmoZhF3yQ5wHPjQ3BGw
 
 
+random.org
+generate random string 
+8ryxvugvip
+
+create s3 bucket
+name it udapeople-8ryxvugvip
+bucket policy
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::udapeople-8ryxvugvip/*"
+        }
+    ]
+}
+
+create profile udapeople
+PS D:\aws\project.3\uda-fg-cicd\.aws> aws configure --profile udapeople
+AWS Access Key ID [None]: AKIAYGAADITRKK4ZLZWN
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1 
+Default output format [None]: json
+
+check credentials are valid
+PS D:\aws\project.3\uda-fg-cicd\.aws> aws sts get-caller-identity --profile udapeople
+{
+    "UserId": "AIDAYGAADITRMTX5G37S3",
+    "Account": "562640930018",
+    "Arn": "arn:aws:iam::562640930018:user/uda-fg-cicd-runner"
+}
+
+create cloudformation test through command line
+cd .circleci/files
+aws cloudformation deploy --template-file cloudfront.yml --stack-name InitialStack --parameter-overrides WorkflowID=udapeople-8ryxvugvip --profile udapeople
+
+.circleci
+add ssh key
+environment variables
+
+AWS Access Key ID [None]: AKIAYGAADITRKK4ZLZWN
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1 
+Default output format [None]: json
+
+```
+AWS_ACCESS_KEY_ID=AKIAYGAADITRKK4ZLZWN <From the new user .csv>
+AWS_SECRET_ACCESS_KEY=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 <From the new user .csv>
+AWS_DEFAULT_REGION=us-east-1 # Or the region you are using for development
+
+TYPEORM_CONNECTION=postgres
+TYPEORM_MIGRATIONS_DIR=./src/migrations
+TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts
+TYPEORM_MIGRATIONS=./src/migrations/*.ts
+
+# From RDS Instance properties
+TYPEORM_HOST=<RDS Instance Endpoint> # Without https in front
+uda-pg-db.c0jx92rgz70c.us-east-1.rds.amazonaws.com
+TYPEORM_PORT=5432
+TYPEORM_USERNAME=postgres # Or the username you chose
+TYPEORM_PASSWORD=<Auto generated> # Or the password you chose
+DYmoZhF3yQ5wHPjQ3BGw
+TYPEORM_DATABASE=<RDS Initial database name, Again NOT DB Instance Identifier>
+glee
+```
+
+add command to install aws cli to ubuntu instance (cimg/, cimg/node:13.8.0)  ubuntu
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+```
+  install_awscli:
+    description: install AWS CLI 2
+    steps:
+    - name: install AWS CLI 2
+    - command: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+```
+
+installing ansible on ubuntu
+https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu
+
+```
+  install_ansible:
+    description: install ansible v2 on ubuntu
+    steps:
+    - name: install ansible v2 on ubuntu
+    - command: |
+        sudo apt update
+        sudo apt install software-properties-common
+        sudo add-apt-repository --yes --update ppa:ansible/ansible
+        sudo apt install ansible
+
+```
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+### Deploy Infrastrcture Steps
+Install AWS CLI
+Ensure BE Infrastructure exit, using backend.yml template
+Ensure FE Infrastructure exit, using frontend.yml template
+Add IP address to ansible inventory
+persist inventory file to workspace
+
+backend.yml
+- added instance name ami-070650c005cce4203
+- add key name uda-fg-ssh-key
+- added not existing type 
+    Type: AWS::EC2::InstanceUbuntu #to raise error resource type not exist
+
+Add rollbackcomand to use on failure (backend.yml)
 
 
-
-
-#### Utilize a configuration management tool to accomplish deployment to cloud-based servers.
 Console output of appropriate failure for infrastructure creation job (using CloudFormation). [SCREENSHOT05]
 
 Console output of a smoke test job that is failing appropriately. [SCREENSHOT06]
