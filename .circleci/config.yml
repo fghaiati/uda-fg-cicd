@@ -6,8 +6,8 @@ orbs:
 parameters:
   action:
     type: enum
-    enum: [default, provision, deploy, cleanup]
-    default: cleanup
+    enum: [default, provision, deploy, cleanup, force-destroy]
+    default: force-destroy
 
 commands:
   notify-on-failure:
@@ -568,6 +568,22 @@ jobs:
       #- revert-migrations
       - notify-on-failure
 
+  force-destroy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install-awscli
+      - aws-cli/setup:
+         profile-name: udapeople
+      - run:
+          name: raise error to destroy-environment and revert-migration 
+          command: |
+            exit 1
+      - destroy-environment
+      - revert-migrations
+      - notify-on-failure
+
   notify-on-success:
     docker:
       - image: cimg/base:stable
@@ -643,4 +659,10 @@ workflows:
       equal: [ cleanup, << pipeline.parameters.action >> ]
     jobs:
       - cleanup
+  
+  force-destroy:
+    when:
+      equal: [ force-destroy, << pipeline.parameters.action >> ]
+    jobs:
+      - force-destroy
   
