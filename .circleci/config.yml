@@ -415,11 +415,10 @@ jobs:
 
             #export EC2_NAME="backend-7219dea"
             #Work on specific WorkFlow_ID
-            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
-            then
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""]; then
               export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
             else
-              export EC2_NAME="backend-${WORKON_SPECIFIC_WORKFLOW_ID}" #"7219dea"
+              export EC2_NAME="backend-${WORKON_SPECIFIC_WORKFLOW_ID}"
             fi
 
             echo "EC2_NAME=${EC2_Name}"
@@ -456,11 +455,10 @@ jobs:
 
             #Work on specific WorkFlow_ID
             #export FRONTEND_SUBDOMAIN="udapeople-7219dea"
-            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
-            then
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""];  then
               export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
             else
-              export FRONTEND_SUBDOMAIN="udapeople-${WORKON_SPECIFIC_WORKFLOW_ID}" #"7219dea"
+              export FRONTEND_SUBDOMAIN="udapeople-${WORKON_SPECIFIC_WORKFLOW_ID}"
             fi
 
             echo "FRONTEND_SUBDOMAIN: ${FRONTEND_SUBDOMAIN}"
@@ -500,11 +498,10 @@ jobs:
             #Work on specific WorkFlow_ID
             #export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             #export UPDATE_TO_WORKFLOW_ID="7219dea"
-            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
-            then
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] ; then
               export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             else
-              export UPDATE_TO_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID}" #"7219dea"
+              export UPDATE_TO_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID}"
             fi
 
             echo "UPDATE_TO_WORKFLOW_ID: ${UPDATE_TO_WORKFLOW_ID}"
@@ -539,11 +536,11 @@ jobs:
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
 
-            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
-            then
+            #Work on specific workflow "7219dea"
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] ; then
               export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             else
-              export LATEST_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID} #"7219dea"
+              export LATEST_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID} 
             fi
             echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
 
