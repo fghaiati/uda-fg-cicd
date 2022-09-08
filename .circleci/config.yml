@@ -89,7 +89,7 @@ commands:
           when: on_fail
           command: |
             if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""]; then
-              export MIGRATION_KEY="migration_<< parameters.Workflow_ID >>""
+              export MIGRATION_KEY="migration_<< parameters.Workflow_ID >>"
             else
               export MIGRATION_KEY="migration_${WORKON_SPECIFIC_WORKFLOW_ID}"
             fi
