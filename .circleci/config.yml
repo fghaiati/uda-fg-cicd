@@ -62,7 +62,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            export WORKON_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             if [${WORKON_WORKFLOW_ID} -eq "" || << pipeline.parameters.action >> -eq default]; then
               export WORKFLOW_ID="<< parameters.Workflow_ID >>"
             else
@@ -93,7 +93,7 @@ commands:
           # Add when this will run
           when: on_fail
           command: |
-            export WORKON_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             if [${WORKON_WORKFLOW_ID} -eq "" || << pipeline.parameters.action >> -eq default]; then
               export MIGRATION_KEY="migration_<< parameters.Workflow_ID >>"
             else
@@ -434,7 +434,7 @@ jobs:
             echo "EC2_NAME = ${EC2_NAME}"
             #export EC2_NAME="backend-7219dea"
             #Work on specific WorkFlow_ID
-            export WORKON_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             
             if [${WORKON_WORKFLOW_ID} -eq "" || << pipeline.parameters.action >> -eq default]; then
               export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
@@ -476,7 +476,7 @@ jobs:
 
             #Work on specific WorkFlow_ID
             #export FRONTEND_SUBDOMAIN="udapeople-7219dea"
-            export WORKON_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             if [${WORKON_WORKFLOW_ID} -eq "" || << pipeline.parameters.action >> -eq default];  then
               export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
             else
@@ -520,7 +520,7 @@ jobs:
             #Work on specific WorkFlow_ID
             #export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             #export UPDATE_TO_WORKFLOW_ID="7219dea"
-            export WORKON_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             if [${WORKON_WORKFLOW_ID} -eq "" || << pipeline.parameters.action >> -eq default] ; then
               export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             else
@@ -558,7 +558,7 @@ jobs:
             echo Stack names: "${STACKS[@]}"
 
             #Work on specific workflow "7219dea"
-            export WORKON_WORKFLOW_ID = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             if [${WORKON_WORKFLOW_ID} -eq "" || << pipeline.parameters.action >> -eq default] ; then
               export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             else
