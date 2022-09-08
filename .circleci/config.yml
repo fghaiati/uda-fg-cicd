@@ -664,5 +664,5 @@ workflows:
     when:
       equal: [ force-destroy, << pipeline.parameters.action >> ]
     jobs:
-      - force-destroy
+      - force-destroy 
   
