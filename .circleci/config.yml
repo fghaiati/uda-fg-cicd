@@ -584,7 +584,7 @@ jobs:
 
   force-destroy:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - install-awscli
