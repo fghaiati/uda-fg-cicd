@@ -6,8 +6,8 @@ orbs:
 parameters:
   action:
     type: enum
-    enum: [default, provision, deploy, cleanup, force-destroy]
-    default: default
+    enum: [default, provision, deploy, smoke-test, cleanup, force-destroy]
+    default: smoke-test
 
 commands:
   notify-on-failure:
@@ -113,7 +113,17 @@ commands:
               npm run migrations:revert
               npm run premigrations:revert
             fi
-            
+
+  save-workflowid:
+    description: SAVE running workflow id to kvdb LAST_RUN_WORKFLOW_ID
+    when:
+      equal: [ default, << pipeline.parameters.action >> ]
+    steps:
+      - run:
+          name: save
+          command: |
+            curl https://kvdb.io/${KVDB_BUCKET}/last_run_workflow_id -d '{CIRCLE_WORKFLOW_ID:0:7}'
+
 jobs:
   build-frontend:
     docker:
@@ -132,6 +142,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - save-workflowid
       - notify-on-failure
 
   build-backend:
@@ -674,6 +685,12 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
+
+  smoke-test:
+    when:
+      equal: [ smoke-test, << pipeline.parameters.action >> ]
+    jobs:
+      - smoke-test
 
   cleanup:
     when:
