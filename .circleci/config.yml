@@ -81,16 +81,22 @@ commands:
       # Add parameter here     
       Workflow_ID:
         type: string
-        default: ${"${WORKON_SPECIFIC_WORKFLOW_ID}${CIRCLE_WORKFLOW_ID}":0:7}
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
       - run:
           name: Revert migrations
           # Add when this will run
           when: on_fail
           command: |
-            echo "Migration Workflow_ID: migration_<< parameters.Workflow_ID >>"
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""]; then
+              export MIGRATION_KEY="migration_<< parameters.Workflow_ID >>""
+            else
+              export MIGRATION_KEY="migration_${WORKON_SPECIFIC_WORKFLOW_ID}"
+            fi
+
+            echo "Migration Workflow_ID: ${MIGRATION_KEY}"
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
+            SUCCESS = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/${MIGRATION_KEY})
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
