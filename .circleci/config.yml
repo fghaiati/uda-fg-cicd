@@ -116,8 +116,6 @@ commands:
 
   save-workflowid:
     description: SAVE running workflow id to kvdb LAST_RUN_WORKFLOW_ID
-    when:
-      equal: [ default, << pipeline.parameters.action >> ]
     steps:
       - run:
           name: save
