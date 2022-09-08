@@ -54,7 +54,6 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here   
       Workflow_ID:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -63,22 +62,27 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation describe-stack-events --stack-name udapeople-backend-<< parameters.Workflow_ID >> --profile udapeople
-            aws cloudformation describe-stack-events --stack-name udapeople-frontend-<< parameters.Workflow_ID >> --profile udapeople
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""]; then
+              export WORKFLOW_ID="<< parameters.Workflow_ID >>"
+            else
+              export WORKFLOW_ID="${WORKON_SPECIFIC_WORKFLOW_ID}"
+            fi
+
+            aws cloudformation describe-stack-events --stack-name udapeople-backend-${WORKFLOW_ID} --profile udapeople
+            aws cloudformation describe-stack-events --stack-name udapeople-frontend-${WORKFLOW_ID} --profile udapeople
 
             # Empty frontend bucket
-            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --profile udapeople --recursive
+            aws s3 rm s3://udapeople-${WORKFLOW_ID} --profile udapeople --recursive
 
             # Delete frontend stack
-            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >> --profile udapeople
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${WORKFLOW_ID} --profile udapeople
 
             # Delete backend stack
-            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >> --profile udapeople
+            aws cloudformation delete-stack --stack-name udapeople-backend-${WORKFLOW_ID} --profile udapeople
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here     
       Workflow_ID:
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -96,6 +100,7 @@ commands:
 
             echo "Migration Workflow_ID: ${MIGRATION_KEY}"
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            echo "curl --insecure https://kvdb.io/${KVDB_BUCKET}/${MIGRATION_KEY}"
             SUCCESS = $(curl --insecure https://kvdb.io/${KVDB_BUCKET}/${MIGRATION_KEY})
             if(( $SUCCESS==1 )); 
             then
