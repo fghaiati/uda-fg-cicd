@@ -535,12 +535,14 @@ jobs:
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
+            echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
 
             #Work on specific workflow "7219dea"
             if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] ; then
               export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
             else
               export LATEST_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID} 
+              echo "specific work flow id - ${WORKON_SPECIFIC_WORKFLOW_ID}"
             fi
             echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
 
@@ -559,7 +561,7 @@ jobs:
             #   fi
             # done
 
-            if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ] ]
+            if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ]]
             then
               aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
