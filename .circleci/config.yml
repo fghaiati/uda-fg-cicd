@@ -523,8 +523,10 @@ jobs:
             export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             if [${WORKON_WORKFLOW_ID} -eq ""] ; then
               export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
+              echo "work on latest - ${UPDATE_TO_WORKFLOW_ID}"
             else
               export UPDATE_TO_WORKFLOW_ID=${WORKON_WORKFLOW_ID}"
+              echo "work on specific - ${UPDATE_TO_WORKFLOW_ID}"
             fi
 
             echo "UPDATE_TO_WORKFLOW_ID: ${UPDATE_TO_WORKFLOW_ID}"
