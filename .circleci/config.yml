@@ -3,6 +3,12 @@ orbs:
   slack: circleci/slack@4.10.1
   aws-cli: circleci/aws-cli@3.1.3
 
+parameters:
+  action:
+    type: enum
+    enum: [release, astep]
+    default: astep
+
 commands:
   notify-on-failure:
     steps:
@@ -44,7 +50,6 @@ commands:
             # Use n version manager to use Node.js v13.8.0
             sudo npm install --global n
             sudo n 13.8.0
-
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -110,7 +115,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      #- notify-on-failure
+      - notify-on-failure
 
   build-backend:
     docker:
@@ -129,7 +134,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      #- notify-on-failure
+      - notify-on-failure
 
   test-frontend:
     docker:
@@ -146,7 +151,7 @@ jobs:
             cd frontend
             npm install
             npm run test
-      #- notify-on-failure
+      - notify-on-failure
                           
   test-backend:
     docker:
@@ -163,7 +168,7 @@ jobs:
             cd backend
             npm install
             npm run test
-      #- notify-on-failure
+      - notify-on-failure
             
   scan-frontend:
     docker:
@@ -179,7 +184,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      #- notify-on-failure
+      - notify-on-failure
 
   scan-backend:
     docker:
@@ -196,7 +201,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
-      #- notify-on-failure
+      - notify-on-failure
 
   deploy-infrastructure:
     docker:
@@ -242,7 +247,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
       #- destroy-environment
-      #- notify-on-failure
+      - notify-on-failure
 
   configure-infrastructure:
     docker:
@@ -302,8 +307,7 @@ jobs:
       # Here's where you will add some code to rollback on failure      
       #- destroy-environment
       #- revert-migrations
-      #- notify-on-failure
-
+      - notify-on-failure
 
   deploy-frontend:
     docker:
@@ -346,7 +350,7 @@ jobs:
       # Here's where you will add some code to rollback on failure      
       #- destroy-environment
       #- revert-migrations
-      #- notify-on-failure
+      - notify-on-failure
                     
   deploy-backend:
     docker:
@@ -395,7 +399,7 @@ jobs:
       # Here's where you will add some code to rollback on failure  
       #- destroy-environment
       #- revert-migrations
-      #- notify-on-failure
+      - notify-on-failure
 
   smoke-test:
     docker:
@@ -459,7 +463,7 @@ jobs:
             fi
       #- destroy-environment
       #- revert-migrations
-      #- notify-on-failure
+      - notify-on-failure
 
   cloudfront-update:
     docker:
@@ -491,7 +495,7 @@ jobs:
               --parameter-overrides WorkflowID="${UPDATE_TO_WORKFLOW_ID}" 
       #- destroy-environment
       #- revert-migrations
-      #- notify-on-failure
+      - notify-on-failure
 
   cleanup:
     docker:
@@ -521,29 +525,29 @@ jobs:
             echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
 
             # remove old stacks
-            for i in "${STACKS[@]}"
-            do
-              if ["${i:0:18}" -eq "udapeople-backend-"] # && ["$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}"]] 
-              then
-                echo "remove workflow $i"
-                echo "${i:0:18}"
-                echo "udapeople-backend-${LATEST_WORKFLOW_ID}"
+            # for i in "${STACKS[@]}"
+            # do
+            #   if ["${i:0:18}" -eq "udapeople-backend-"] # && ["$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}"]] 
+            #   then
+            #     echo "remove workflow $i"
+            #     echo "${i:0:18}"
+            #     echo "udapeople-backend-${LATEST_WORKFLOW_ID}"
 
-                #aws s3 rm "s3://udapeople-$i" --recursive 
-                #aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
-                #aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
-              fi
-            done
+            #     #aws s3 rm "s3://udapeople-$i" --recursive 
+            #     #aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
+            #     #aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
+            #   fi
+            # done
 
-            # if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ] ]
-            # then
-            #   aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
-            #   aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
-            #   aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
-            # fi
+            if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ] ]
+            then
+              aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
+            fi
       #- destroy-environment
       #- revert-migrations
-      #- notify-on-failure
+      - notify-on-failure
 
   notify-on-success:
     docker:
@@ -557,43 +561,82 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - build-frontend:
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
 
-      # - deploy-frontend
-      # - deploy-backend
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
-      # - smoke-test
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      # - cloudfront-update
-      # - cleanup:
-      #     requires: [cloudfront-update]
-        - cleanup
-      # - notify-on-success:
-      #     requires: [cleanup]
+      - build-backend:
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - test-frontend:
+          requires: [build-frontend]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - test-backend:
+          requires: [build-backend]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - scan-backend:
+          requires: [build-backend]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - scan-frontend:
+          requires: [build-frontend]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+          filters:
+            branches:
+              only: [master]
+
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - run-migrations:
+          requires: [configure-infrastructure]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - deploy-frontend:
+          requires: [run-migrations]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - deploy-backend:
+          requires: [run-migrations]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - cloudfront-update:
+          requires: [smoke-test]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
+      - cleanup:
+          requires: [cloudfront-update]
+          when:
+            equal: [ astep, << pipeline.parameters.action >> ]
+
+      - notify-on-success:
+          requires: [cleanup]
+          when:
+            equal: [ release, << pipeline.parameters.action >> ]
+
           #requires: [smoke-test]
           #requires: [deploy-frontend,deploy-backend]
           #requires: [run-migrations]

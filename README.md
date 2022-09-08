@@ -453,3 +453,18 @@ Evidence of Prometheus Server. [URL05]
 Evidence that Prometheus is monitoring memory, cpu and disk usage of EC2 instances. [SCREENSHOT11]
 
 Evidence that Prometheus and AlertManager send alerts when certain conditions exist in the EC2 instance. [SCREENSHOT12]
+
+
+
+
+### - 8 Sep Resumed work
+as the pipeline workflow/steps becoming more enritched the running on circle ci consumes countable time (~10 min) meanwhile would like to test just one or two steps where woring on coding it, 
+i was commenting and un-commenting code
+however found usig parameters to decide on workflow is a better alternative 
+
+added 
+parameters:
+  action:
+    type: enum
+    enum: [release, astep]
+    default: release
