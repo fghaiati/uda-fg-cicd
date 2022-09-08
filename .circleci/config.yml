@@ -523,19 +523,16 @@ jobs:
       - aws-cli/setup:
          profile-name: udapeople
       - run:
-          name: Get old stack workflow id
+          name: Get old stack workflow id, then Remove old stacks and files
           command: |
             # Fetch the Old workflow ID from kvdb.io
             export OLD_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
             echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
-      - run:
-          name: Remove old stacks and files
-          command: |
+
             # Fetch the stack names          
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
-            echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
 
             #Work on specific workflow "7219dea"
             if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] ; then
