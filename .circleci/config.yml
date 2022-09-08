@@ -96,6 +96,7 @@ commands:
               export MIGRATION_KEY="migration_<< parameters.Workflow_ID >>"
             else
               export MIGRATION_KEY="migration_${WORKON_SPECIFIC_WORKFLOW_ID}"
+              echo "work on specific worflow"
             fi
 
             echo "Migration Workflow_ID: ${MIGRATION_KEY}"
