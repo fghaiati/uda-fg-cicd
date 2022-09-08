@@ -6,8 +6,8 @@ orbs:
 parameters:
   action:
     type: enum
-    enum: [release, astep]
-    default: astep
+    enum: [default, provision, deploy, cleanup]
+    default: cleanup
 
 commands:
   notify-on-failure:
@@ -246,7 +246,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
-      #- destroy-environment
+      - destroy-environment
       - notify-on-failure
 
   configure-infrastructure:
@@ -261,7 +261,6 @@ jobs:
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["3b:2b:b2:cc:41:b4:46:4f:e2:ba:e1:57:fc:f6:ad:0f"]
-      # attach workspace
       - attach_workspace:
           at: ~/
       # - run:
@@ -306,7 +305,7 @@ jobs:
             fi
       # Here's where you will add some code to rollback on failure      
       #- destroy-environment
-      #- revert-migrations
+      - revert-migrations
       - notify-on-failure
 
   deploy-frontend:
@@ -414,8 +413,14 @@ jobs:
           command: |
             export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
 
+            #export EC2_NAME="backend-7219dea"
             #Work on specific WorkFlow_ID
-            export EC2_NAME="backend-7219dea"
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
+            then
+              export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
+            else
+              export EC2_NAME="backend-${WORKON_SPECIFIC_WORKFLOW_ID}" #"7219dea"
+            fi
 
             echo "EC2_NAME=${EC2_Name}"
 
@@ -450,7 +455,13 @@ jobs:
             export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
 
             #Work on specific WorkFlow_ID
-            export FRONTEND_SUBDOMAIN="udapeople-7219dea"
+            #export FRONTEND_SUBDOMAIN="udapeople-7219dea"
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
+            then
+              export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
+            else
+              export FRONTEND_SUBDOMAIN="udapeople-${WORKON_SPECIFIC_WORKFLOW_ID}" #"7219dea"
+            fi
 
             echo "FRONTEND_SUBDOMAIN: ${FRONTEND_SUBDOMAIN}"
             export FRONTEND_WEBSITE="http://${FRONTEND_SUBDOMAIN}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/"
@@ -486,8 +497,16 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
-            export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
-            export UPDATE_TO_WORKFLOW_ID="7219dea"
+            #Work on specific WorkFlow_ID
+            #export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
+            #export UPDATE_TO_WORKFLOW_ID="7219dea"
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
+            then
+              export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              export UPDATE_TO_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID}" #"7219dea"
+            fi
+
             echo "UPDATE_TO_WORKFLOW_ID: ${UPDATE_TO_WORKFLOW_ID}"
             aws cloudformation deploy \
               --stack-name InitialStack --profile udapeople\
@@ -520,8 +539,12 @@ jobs:
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
 
-            export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
-            export LATEST_WORKFLOW_ID="7219dea"
+            if [${WORKON_SPECIFIC_WORKFLOW_ID} -eq ""] 
+            then
+              export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              export LATEST_WORKFLOW_ID=${WORKON_SPECIFIC_WORKFLOW_ID} #"7219dea"
+            fi
             echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
 
             # remove old stacks
@@ -560,87 +583,68 @@ jobs:
 
 workflows:
   default:
+    when:
+      equal: [ default, << pipeline.parameters.action >> ]
     jobs:
-      - build-frontend:
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
-      - build-backend:
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
+      - build-frontend
+      - build-backend
       - test-frontend:
           requires: [build-frontend]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - test-backend:
           requires: [build-backend]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - scan-backend:
           requires: [build-backend]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - scan-frontend:
           requires: [build-frontend]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
           filters:
             branches:
               only: [master]
-
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - run-migrations:
           requires: [configure-infrastructure]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - deploy-frontend:
           requires: [run-migrations]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - deploy-backend:
           requires: [run-migrations]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - cloudfront-update:
           requires: [smoke-test]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
-
       - cleanup:
           requires: [cloudfront-update]
-          when:
-            equal: [ astep, << pipeline.parameters.action >> ]
-
       - notify-on-success:
           requires: [cleanup]
-          when:
-            equal: [ release, << pipeline.parameters.action >> ]
 
-          #requires: [smoke-test]
-          #requires: [deploy-frontend,deploy-backend]
-          #requires: [run-migrations]
-          #requires: [configure-infrastructure]
-          #requires: [deploy-infrastructure]
-          #requires: [scan-backend , scan-frontend, test-backend, test-frontend]
-      
+  provision:
+    when:
+      equal: [ provision, << pipeline.parameters.action >> ]
+    jobs:
+      - deploy-infrastructure:
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+
+  deploy:
+    when:
+      equal: [ deploy, << pipeline.parameters.action >> ]
+    jobs:
+      - deploy-frontend
+      - deploy-backend
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+
+  cleanup:
+    when:
+      equal: [ cleanup, << pipeline.parameters.action >> ]
+    jobs:
+      - cleanup
+  
