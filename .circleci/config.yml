@@ -433,9 +433,10 @@ jobs:
           name: Get backend url & Backend smoke test
           command: |
             #export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
+            export WORKON_WORKFLOW_ID=""
             export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
             echo "WORKON_WORKFLOW_ID = ${WORKON_WORKFLOW_ID}"
-            if ["${WORKON_WORKFLOW_ID}" -eq "" || "<< pipeline.parameters.action >>" -eq "default"]; then
+            if ["${WORKON_WORKFLOW_ID:0:7}" -eq "" || "<< pipeline.parameters.action >>" -eq "default"]; then
               export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
               echo "Last run workflow ---${EC2_NAME}---"
             else
