@@ -552,6 +552,7 @@ scrape_configs:
   - job_name: 'prometheus'
     ec2_sd_configs:
       - region: us-east-1
+        endpoint: ""
         port: 9100
         filters:
           - name: tag:Project
@@ -584,15 +585,32 @@ sudo chown prometheus.prometheus -R /var/lib/prometheus
 
 sudo systemctl stop node_exporter
 sudo systemctl stop prometheus
-
 sudo systemctl daemon-reload
 sudo systemctl enable node_exporter
 sudo systemctl enable prometheus
 sudo systemctl start node_exporter
+sudo systemctl status node_exporter
 sudo systemctl start prometheus
 sudo systemctl status prometheus
-sudo systemctl status node_exporter
 
+
+
+sudo nano /etc/prometheus/prometheus.yml
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['ec2-18-206-170-71.compute-1.amazonaws.com:9100']
+      
+  - job_name: 'updapeople-fg'
+    scrape_interval: 5s
+
+    ec2_sd_configs:
+      - targets: ['ec2-3-95-5-149.compute-1.amazonaws.com:9100']
+        filters:
+          - name: tag:Project
+            values: [udaproject]
 
 
 
@@ -604,3 +622,116 @@ daemon-reload
 
 d prometheus
 sudo systemctl restart prometheus
+
+
+
+Monitotring insttances
+# CPU usage:
+avg(rate(node_cpu_seconds_total{mode!="idle"}[1m])) by (instance) * 100
+
+# Available Memory
+node_memory_MemFree_bytes+node_memory_Cached_bytes+node_memory_Buffers_bytes
+
+# Available disk space 
+node_filesystem_free_bytes{device="/dev/root"}
+
+# average memory usage for instances over the past 24 hours:
+100 * (1 - ((avg_over_time(node_memory_MemFree[24h]) + avg_over_time(node_memory_Cached[24h]) + avg_over_time(node_memory_Buffers[24h])) / avg_over_time(node_memory_MemTotal[24h])))
+
+
+# Alerting
+## create app password on gmail
+Guide for Slack Webhook integration with Alertmanager https://grafana.com/blog/2020/02/25/s...
+https://grafana.com/blog/2020/02/25/
+
+prometheus
+ovirbhdffcinqcls
+Go to the settings for your Google Account in the application or device you are trying to set up. Replace your password with the 16-character password shown above.
+Just like your normal password, this app password grants complete access to your Google Account. You won't need to remember it, so don't write it down or share it with anyone.
+
+creat channel in slack #udapeople-alert
+create app in slack select Incoming WebHooks
+https://hooks.slack.com/services/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
+
+Sending Messages
+You have two options for sending data to the Webhook URL above:
+Send a JSON string as the payload parameter in a POST request
+Send a JSON string as the body of a POST request
+For a simple message, your JSON payload could contain a text property at minimum. This is the text that will be posted to the channel.
+A simple example:
+payload={"text": "This is a line of text in a channel.\nAnd this is another line of text."}
+This will be displayed in the channel as:
+
+Adding links
+To create a link in your text, enclose the URL in <> angle brackets. For example: payload="text": "" will post a clickable link to https://slack.com. To display hyperlinked text instead of the actual URL, use the pipe character, as shown in this example:
+payload={"text": "A very important thing has occurred! <https://alert-system.com/alerts/1234|Click here> for details!"}
+This will be displayed in the channel as:
+
+
+# steps for alerting
+## Install & config prometheus rules and alertmanager, start
+sudo wget https://github.com/prometheus/alertmanager/releases/download/v0.24.0/alertmanager-0.24.0.linux-amd64.tar.gz
+
+tar -xvf alertmanager-0.24.0.linux-amd64.tar.gz
+sudo cp alertmanager-0.24.0.linux-amd64/amtool /usr/local/bin/
+sudo cp alertmanager-0.24.0.linux-amd64/alertmanager /usr/local/bin/
+sudo cp alertmanager-0.24.0.linux-amd64/alertmanager.yml /etc/prometheus/rules.yml
+sudo mkdir /var/lib/alertmanager
+
+sudo nano /etc/prometheus/rules.yml
+groups:
+- name: Down
+  rules:
+  - alert: InstanceDown
+    # Condition for alerting
+    expr: up == 0
+    for: 1m
+    # Annotation - additional informational labels to store more information
+    annotations:
+      title: 'Instance {{ $labels.instance }} down'
+      description: '{{ $labels.instance }} of job {{ $labels.job }} has been do>
+    # Labels - additional labels to be attached to the alert
+    labels:
+      severity: 'critical'
+
+
+
+  evaluation_interval: 10s
+
+
+
+adding to prometheus.yml 
+# Rules and alerts are read from the specified file(s)
+rule_files:
+  - rules.yml
+
+# Alerting specifies settings related to the Alertmanager
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        # Alertmanager's default port is 9093
+        - localhost:9093
+
+alertmanager.yml
+global:
+  resolve_timeout: 1m
+  slack_api_url: 'https://hooks.slack.com/services/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'
+route:
+  receiver: 'slack-notifications'
+
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - channel: '#udapeople-alert'
+    send_resolved: true
+
+
+
+cd /usr/local/bin/
+sudo ./alertmanager --config.file=alertmanager.yml
+
+
+step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/
+
+The guide suggested by the project instructions: https://codewizardly.com/prometheus-o...
