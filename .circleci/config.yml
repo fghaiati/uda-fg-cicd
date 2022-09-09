@@ -435,9 +435,8 @@ jobs:
             #export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
             export WORKON_WORKFLOW_ID=""
             export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-            export WORKON_WORKFLOW_ID="${WORKON_WORKFLOW_ID}0"
             echo "WORKON_WORKFLOW_ID = ${WORKON_WORKFLOW_ID}"
-            if ["${WORKON_WORKFLOW_ID:0:7}" -eq "0" || "<< pipeline.parameters.action >>" -eq "default"]; then
+            if [-z $WORKON_WORKFLOW_ID || default -eq << pipeline.parameters.action >>]; then
               export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
               echo "Last run workflow ---${EC2_NAME}---"
             else
