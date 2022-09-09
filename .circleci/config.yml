@@ -6,8 +6,8 @@ orbs:
 parameters:
   action:
     type: enum
-    enum: [default, provision, configure-infrastructure, deploy, smoke-test, cleanup, force-destroy]
-    default: cleanup
+    enum: [default, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
+    default: deploy-frontend
 
 commands:
   notify-on-failure:
@@ -234,10 +234,8 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      # Docker image here that supports AWS CLI
       - image: cimg/base:stable
     steps:
-      # Checkout code from git
       - checkout
       - install-awscli    
       - aws-cli/setup:
@@ -339,10 +337,8 @@ jobs:
 
   deploy-frontend:
     docker:
-      # Docker image here that supports AWS CLI
       - image: cimg/base:stable
     steps:
-      # Checkout code from git
       - checkout
       - install-awscli
       - install-nodejs
@@ -357,9 +353,15 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            # your code here
+            export WORKFLOW_ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+              export WORKFLOW_ID="${WORKON_WORKFLOW_ID}"
+            fi
+            echo "WORKFLOW_ID: ${WORKFLOW_ID}"
+
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:Name,Values=backend-${WORKFLOW_ID}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
 
@@ -371,10 +373,16 @@ jobs:
       - run:
           name: Deploy frontend objects to the s3 bucket
           command: |
-            # your code here
+            export WORKFLOW_ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+              export WORKFLOW_ID="${WORKON_WORKFLOW_ID}"
+            fi
+            echo "WORKFLOW_ID: ${WORKFLOW_ID}"
+
             cd frontend
-            npm run build:prod
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            npm run build
+            aws s3 cp dist s3://udapeople-${WORKFLOW_ID} --recursive
       # Here's where you will add some code to rollback on failure      
       #- destroy-environment
       #- revert-migrations
@@ -645,6 +653,12 @@ workflows:
           requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
+
+  deploy-frontend:
+    when:
+      equal: [ deploy-frontend, << pipeline.parameters.action >> ]
+    jobs:
+      - deploy-frontend
 
   provision:
     when:
