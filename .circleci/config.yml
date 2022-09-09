@@ -7,7 +7,7 @@ parameters:
   action:
     type: enum
     enum: [default, provision, configure-infrastructure, deploy, smoke-test, cleanup, force-destroy]
-    default: default
+    default: cleanup
 
 commands:
   notify-on-failure:
@@ -584,7 +584,7 @@ jobs:
                 echo "aws cloudformation delete-stack --stack-name \"udapeople-backend-${REMOVE_WORKFLOW_ID}\""
                 echo "aws cloudformation delete-stack --stack-name \"udapeople-frontend-${REMOVE_WORKFLOW_ID}\""
 
-                aws s3 rm "s3://udapeople-${REMOVE_WORKFLOW_ID}" --recursive"
+                aws s3 rm "s3://udapeople-${REMOVE_WORKFLOW_ID}" --recursive
                 aws cloudformation delete-stack --stack-name "udapeople-backend-${REMOVE_WORKFLOW_ID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${REMOVE_WORKFLOW_ID}"
               fi
