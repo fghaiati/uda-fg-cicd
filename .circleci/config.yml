@@ -62,12 +62,14 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-            if [[ ! -n ${WORKON_WORKFLOW_ID} ]] || [[ default -eq << pipeline.parameters.action >> ]]; then
-              export WORKFLOW_ID="<< parameters.Workflow_ID >>"
-            else
+            export WORKFLOW_ID="${CIRCLE_WORKFLOW_ID:0:7}"
+
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
               export WORKFLOW_ID="${WORKON_WORKFLOW_ID}"
             fi
+
+            echo "WORKFLOW_ID: ${WORKFLOW_ID}"
 
             aws cloudformation describe-stack-events --stack-name udapeople-backend-${WORKFLOW_ID} --profile udapeople
             aws cloudformation describe-stack-events --stack-name udapeople-frontend-${WORKFLOW_ID} --profile udapeople
@@ -93,15 +95,15 @@ commands:
           # Add when this will run
           when: on_fail
           command: |
-            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-            if [[ ! -n ${WORKON_WORKFLOW_ID} ]] || [[ default -eq << pipeline.parameters.action >> ]]; then
-              export MIGRATION_KEY="migration_<< parameters.Workflow_ID >>"
-            else
+            export MIGRATION_KEY="migration_${CIRCLE_WORKFLOW_ID:0:7}"
+
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
               export MIGRATION_KEY="migration_${WORKON_WORKFLOW_ID}"
-              echo "work on specific worflow"
             fi
 
-            echo "Migration Workflow_ID: ${MIGRATION_KEY}"
+            echo "MIGRATION_KEY: ${MIGRATION_KEY}"
+
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             echo "curl --insecure https://kvdb.io/${KVDB_BUCKET}/${MIGRATION_KEY}"
             export MIGRATION_STATE=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/${MIGRATION_KEY})
@@ -436,17 +438,10 @@ jobs:
             
             if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
               export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-              echo "WORKON_WORKFLOW_ID = ${WORKON_WORKFLOW_ID}"
               export EC2_NAME="backend-${WORKON_WORKFLOW_ID}"
-              echo "Work on Workflow ---${EC2_NAME}---"
             fi
-            # if [[ -n ${WORKON_WORKFLOW_ID} ]] || ; then
-            #   export EC2_NAME="backend-${CIRCLE_WORKFLOW_ID:0:7}"
-            #   echo "Last run workflow ---${EC2_NAME}---"
-            # else
-            # fi
 
-            echo "EC2_NAME: ---${EC2_NAME}---"
+            echo "EC2_NAME: ${EC2_NAME}"
 
             export AWS_GET_BACKEND_PUBLIC_IP_QUERY="aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=${EC2_NAME}" \
@@ -478,16 +473,13 @@ jobs:
           command: |
             export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
 
-            #Work on specific WorkFlow_ID
-            #export FRONTEND_SUBDOMAIN="udapeople-7219dea"
-            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-            if [[ ! -n ${WORKON_WORKFLOW_ID} ]] || [[ default -eq << pipeline.parameters.action >> ]];  then
-              export FRONTEND_SUBDOMAIN="udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
-            else
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
               export FRONTEND_SUBDOMAIN="udapeople-${WORKON_WORKFLOW_ID}"
             fi
 
             echo "FRONTEND_SUBDOMAIN: ${FRONTEND_SUBDOMAIN}"
+
             export FRONTEND_WEBSITE="http://${FRONTEND_SUBDOMAIN}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com/"
             echo "FRONTEND_WEBSITE: ${FRONTEND_WEBSITE}"
             if curl -s $FRONTEND_WEBSITE | grep "Welcome"
@@ -521,21 +513,15 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
-            #Work on specific WorkFlow_ID
-            #export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
-            #export UPDATE_TO_WORKFLOW_ID="7219dea"
-            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-            echo "WORKON_WORKFLOW_ID - ${WORKON_WORKFLOW_ID}"
+            export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
 
-            if ["${WORKON_WORKFLOW_ID}" -eq "" || "<< pipeline.parameters.action >>" -eq "default"] ; then
-              export UPDATE_TO_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
-              echo "work on latest - ${UPDATE_TO_WORKFLOW_ID}"
-            else
-              export UPDATE_TO_WORKFLOW_ID=${WORKON_WORKFLOW_ID}
-              echo "work on specific - ${UPDATE_TO_WORKFLOW_ID}"
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+              export UPDATE_TO_WORKFLOW_ID="${WORKON_WORKFLOW_ID}"
             fi
 
             echo "UPDATE_TO_WORKFLOW_ID: ${UPDATE_TO_WORKFLOW_ID}"
+
             aws cloudformation deploy \
               --stack-name InitialStack --profile udapeople\
               --template-file .circleci/files/cloudfront.yml \
@@ -565,14 +551,15 @@ jobs:
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
 
-            #Work on specific workflow "7219dea"
-            export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
-            if ["${WORKON_WORKFLOW_ID}" -eq "" || "<< pipeline.parameters.action >>" -eq "default"] ; then
-              export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
-            else
-              export LATEST_WORKFLOW_ID=${WORKON_WORKFLOW_ID} 
-              echo "specific work flow id - ${WORKON_WORKFLOW_ID}"
+
+
+            export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
+
+            if [[ "<< pipeline.parameters.action >>" != "default" ]]; then
+              export WORKON_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/workon_specific_workflow_id)
+              export LATEST_WORKFLOW_ID="${WORKON_WORKFLOW_ID}"
             fi
+
             echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
 
             # remove old stacks
