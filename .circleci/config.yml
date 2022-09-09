@@ -20,7 +20,7 @@ commands:
     steps:
       - slack/notify:
           event: pass
-          template: success_tagged_deployment_1
+          #template: success_tagged_deployment_1
 
   install-awscli:
     description: install AWS CLI 2
