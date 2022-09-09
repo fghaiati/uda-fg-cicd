@@ -20,7 +20,6 @@ commands:
     steps:
       - slack/notify:
           event: pass
-          channel: circleci
           template: success_tagged_deployment_1
 
   install-awscli:
