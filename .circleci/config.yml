@@ -532,7 +532,6 @@ jobs:
 
   cleanup:
     docker:
-      # Docker image here
       - image: cimg/base:stable
     steps:
       - checkout
@@ -542,16 +541,22 @@ jobs:
       - run:
           name: Get old stack workflow id, then Remove old stacks and files
           command: |
-            # Fetch the Old workflow ID from kvdb.io
-            export OLD_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
-            echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
-
             # Fetch the stack names          
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text --profile udapeople)) 
             echo Stack names: "${STACKS[@]}"
 
+            # Fetch the Old workflow ID from kvdb.io
+            # export OLD_WORKFLOW_ID=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/old_workflow_id)
+            # echo "OLD_WORKFLOW_ID: ${OLD_WORKFLOW_ID}"
 
+            # if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ]]
+            # then
+            #   echo "remove old workflow ${OLD_WORKFLOW_ID}"
+            #   aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
+            #   aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
+            #   aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
+            # fi
 
             export LATEST_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -562,42 +567,18 @@ jobs:
 
             echo "LATEST_WORKFLOW_ID: ${LATEST_WORKFLOW_ID}"
 
-            # remove old stacks
-            # for i in "${STACKS[@]}"
-            # do
-            #   if ["${i:0:18}" -eq "udapeople-backend-"] # && ["$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}"]] 
-            #   then
-            #     echo "remove workflow $i"
-            #     echo "${i:0:18}"
-            #     echo "udapeople-backend-${LATEST_WORKFLOW_ID}"
-
-            #     #aws s3 rm "s3://udapeople-$i" --recursive 
-            #     #aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
-            #     #aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
-            #   fi
-            # done
-
-            if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ]]
-            then
-              echo "remove old workflow ${OLD_WORKFLOW_ID}"
-              aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
-              aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
-              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
-            fi
-
             for i in "${STACKS[@]}"
             do
               if [[ "${i:0:18}" == "udapeople-backend-" ]] && [[ "$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}" ]] 
               then
-                echo "remove workflow $i"
-                echo "${i:18:7}"
+                export REMOVE_WORKFLOW_ID = ${i:18:7}
+                echo "remove workflow ${REMOVE_WORKFLOW_ID}"
 
-                #aws s3 rm "s3://udapeople-$i" --recursive 
-                #aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
-                #aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
+                echo "aws s3 rm \"s3://udapeople-${REMOVE_WORKFLOW_ID}\" --recursive"
+                echo "aws cloudformation delete-stack --stack-name \"udapeople-backend-${REMOVE_WORKFLOW_ID}\""
+                echo "aws cloudformation delete-stack --stack-name \"udapeople-frontend-${REMOVE_WORKFLOW_ID}\"
               fi
             done
-
 
       #- destroy-environment
       #- revert-migrations
