@@ -714,5 +714,5 @@ workflows:
     when:
       equal: [ scan, << pipeline.parameters.action >> ]
     jobs:
-      - scan-frontkend
+      - scan-frontend
       - scan-backend
