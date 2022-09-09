@@ -7,7 +7,7 @@ parameters:
   action:
     type: enum
     enum: [default, provision, deploy, smoke-test, cleanup, force-destroy]
-    default: smoke-test
+    default: cleanup
 
 commands:
   notify-on-failure:
@@ -579,10 +579,26 @@ jobs:
 
             if [[ "${OLD_WORKFLOW_ID}" =~ "${STACKS[@]}" ]]
             then
+              echo "remove old workflow ${OLD_WORKFLOW_ID}"
               aws s3 rm "s3://udapeople-${OLD_WORKFLOW_ID}" --recursive 
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OLD_WORKFLOW_ID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OLD_WORKFLOW_ID}"
             fi
+
+            for i in "${STACKS[@]}"
+            do
+              if [[ "${i:0:18}" == "udapeople-backend-" ]] && [[ "$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}" ]] 
+              then
+                echo "remove workflow $i"
+                echo "${i:18:7}"
+
+                #aws s3 rm "s3://udapeople-$i" --recursive 
+                #aws cloudformation delete-stack --stack-name "udapeople-backend-$i"
+                #aws cloudformation delete-stack --stack-name "udapeople-frontend-$i"
+              fi
+            done
+
+
       #- destroy-environment
       #- revert-migrations
       - notify-on-failure
