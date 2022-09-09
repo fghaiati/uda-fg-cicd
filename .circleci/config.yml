@@ -571,7 +571,7 @@ jobs:
             do
               if [[ "${i:0:18}" == "udapeople-backend-" ]] && [[ "$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}" ]] 
               then
-                export REMOVE_WORKFLOW_ID = ${i:18:7}
+                export REMOVE_WORKFLOW_ID=${i:18:7}
                 echo "remove workflow ${REMOVE_WORKFLOW_ID}"
 
                 echo "aws s3 rm \"s3://udapeople-${REMOVE_WORKFLOW_ID}\" --recursive"
