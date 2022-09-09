@@ -4,6 +4,8 @@
 #aws configurations
 .aws/
 
+.local.README.md
+
 # Logs
 logs
 *.log
