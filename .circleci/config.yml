@@ -6,8 +6,8 @@ orbs:
 parameters:
   action:
     type: enum
-    enum: [default, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
-    default: default
+    enum: [none, default, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
+    default: none
 
 commands:
   notify-on-failure:
@@ -710,3 +710,6 @@ workflows:
     jobs:
       - force-destroy 
   
+  none:
+    when:
+      equal: [ none, << pipeline.parameters.action >> ]
