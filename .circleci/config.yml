@@ -7,7 +7,7 @@ parameters:
   action:
     type: enum
     enum: [none, default, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
-    default: none
+    default: default
 
 commands:
   notify-on-failure:
