@@ -6,7 +6,7 @@ orbs:
 parameters:
   action:
     type: enum
-    enum: [none, default, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
+    enum: [default, scan, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
     default: default
 
 commands:
@@ -710,6 +710,9 @@ workflows:
     jobs:
       - force-destroy 
   
-  none:
+  scan:
     when:
-      equal: [ none, << pipeline.parameters.action >> ]
+      equal: [ scan, << pipeline.parameters.action >> ]
+    jobs:
+      - scan-frontkend
+      - scan-backend
