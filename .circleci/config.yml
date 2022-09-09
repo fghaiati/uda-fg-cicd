@@ -16,6 +16,13 @@ commands:
         event: fail
         template: basic_fail_1
 
+  notify-on-success:
+    steps:
+      - slack/notify:
+          event: pass
+          channel: circleci
+          template: success_tagged_deployment_1
+
   install-awscli:
     description: install AWS CLI 2
     steps:
@@ -572,7 +579,7 @@ jobs:
               if [[ "${i:0:18}" == "udapeople-backend-" ]] && [[ "$i" != "udapeople-backend-${LATEST_WORKFLOW_ID}" ]] 
               then
                 export REMOVE_WORKFLOW_ID=${i:18:7}
-                echo "remove workflow ${REMOVE_WORKFLOW_ID}"
+                echo "#remove workflow ${REMOVE_WORKFLOW_ID}"
 
                 echo "aws s3 rm \"s3://udapeople-${REMOVE_WORKFLOW_ID}\" --recursive"
                 echo "aws cloudformation delete-stack --stack-name \"udapeople-backend-${REMOVE_WORKFLOW_ID}\""
@@ -583,6 +590,7 @@ jobs:
       #- destroy-environment
       #- revert-migrations
       - notify-on-failure
+      - notify-on-success
 
   force-destroy:
     docker:
@@ -599,15 +607,6 @@ jobs:
       - destroy-environment
       - revert-migrations
       - notify-on-failure
-
-  notify-on-success:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - slack/notify:
-          event: pass
-          channel: circleci
-          template: success_tagged_deployment_1
 
 workflows:
   default:
@@ -643,8 +642,6 @@ workflows:
           requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
-      - notify-on-success:
-          requires: [cleanup]
 
   provision:
     when:
@@ -683,7 +680,7 @@ workflows:
       equal: [ cleanup, << pipeline.parameters.action >> ]
     jobs:
       - cleanup
-  
+
   force-destroy:
     when:
       equal: [ force-destroy, << pipeline.parameters.action >> ]
