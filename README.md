@@ -1,13 +1,13 @@
-# Udacity Advanced DevOps Nanodegree 3rd PRoject
+## Udacity Advanced DevOps Nanodegree 3rd Project
 ## Give Your Application Auto-Deploy Superpowers Project
  
-By: Fathi Ghaiati
-fathi.ghaiati@gmail.com
-August 2022 / September 2022
-About: This is my udacity Advanced DevOps Nanodegree CICD graduation project
+- By: Fathi Ghaiati
+- fathi.ghaiati@gmail.com
+- August 2022 / September 2022
+- About: This is my udacity Advanced DevOps Nanodegree CICD graduation project
 
 ### Objectives
-This project, enabled me to prove my mastery of the following learning objectives:
+This project, is requested for the purpose to enable me to prove my mastery of the following learning objectives:
 
 - Explain the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
 - Utilize Deployment Strategies to design and build CI/CD pipelines that support Continuous Delivery processes.
@@ -27,41 +27,81 @@ This project, enabled me to prove my mastery of the following learning objective
 
 ### Project Submission
 
-For your submission, please submit the following:
+#### urls(urls.txt)
+- A text file named `urls.txt` includes:
+  HINT: URL*_SCREENSHOT's urls may differ than latest urls submission as aws stops images automatically (brings it down) and when manually start instances aws changes the ip-address and image-link
+   
+  1. Public Url to GitHub repository (not private) [URL01](https://github.com/fghaiati/uda-fg-cicd)
+  ![URL01](screenshots/URL01_SCREENSHOT.png)
 
-- A text file named `urls.txt` including:
-  1. Public Url to GitHub repository (not private) [URL01]
-  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
-  1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
+  1. Public URL for the project's S3 Bucket (aka, your green candidate front-end) [URL02]
+  ![URL02](screenshots/URL02_SCREENSHOT.png)
+
+  1. Public URL for the project's CloudFront distribution (aka, your blue production front-end) [URL03]
+  ![URL03](screenshots/URL03_SCREENSHOT.png)
+
   1. Public URLs to deployed application back-end in EC2 [URL04]
-  1. Public URL to your Prometheus Server [URL05]
+  ![URL04](screenshots/URL04_SCREENSHOT.png)
 
+  1. Public URL to the project's Prometheus Server [URL05]
+  ![URL05](screenshots/URL05_SCREENSHOT.png)
+
+
+#### screenshots(screenshots/)
 - Below are screenshots in PNG format, named using the screenshot number listed in the instructions. The screenshots are included in the screenshots/* folder
 
   1. Job failed because of compile errors. [SCREENSHOT01]
   ![Job failed because of compile errors](screenshots/SCREENSHOT01.png)
   ![Job failed because of compile errors - fixed](screenshots/SCREENSHOT01-FIXED.png)
   
-  2. Job failed because of unit tests. [SCREENSHOT02]
+  1. Job failed because of unit tests. [SCREENSHOT02-*]
   ![Job failed because of unit tests - backend](screenshots/SCREENSHOT02-backend-unit-test.png)
   ![Job failed because of unit tests - frontend](screenshots/SCREENSHOT02-frontend-unit-test.png)
   ![Job failed because of unit tests - fixed](screenshots/SCREENSHOT02-FIXED.png)
   
-  3. Job failed because of vulnerable packages. [SCREENSHOT03]
+  1. Job failed because of vulnerable packages. [SCREENSHOT03]
   ![Job failed because of vulnerable packages](screenshots/SCREENSHOT03.png)
 
+  1. Alert from one of failed builds. [SCREENSHOT04-*]
+  ![Alert from one of failed builds](screenshots/SCREENSHOT04-SLACK.png)
+  ![Alert from one of failed builds](screenshots/SCREENSHOT04-EMAIL.png)
 
-  1. An alert from one of your failed builds. [SCREENSHOT04]
   1. Appropriate job failure for infrastructure creation. [SCREENSHOT05]
-  1. Appropriate job failure for the smoke test job. [SCREENSHOT06]
-  1. Successful rollback after a failed smoke test. [SCREENSHOT07]  
-  1. Successful promotion job. [SCREENSHOT08]
-  1. Successful cleanup job. [SCREENSHOT09]
-  1. Only deploy on pushed to `master` branch. [SCREENSHOT10]
-  1. Provide a screenshot of a graph of your EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
-  1. Provide a screenshot of an alert that was sent by Prometheus. [SCREENSHOT12]
+  ![Appropriate job failure for infrastructure creation](screenshots/SCREENSHOT05.png)
 
-- Your presentation should be in PDF format named "presentation.pdf" and should be included in your code repository root folder. 
+  1. Appropriate job failure for the smoke test job. [SCREENSHOT06]
+  ![Appropriate job failure for the smoke test job](screenshots/SCREENSHOT06.png)
+
+  1. Successful rollback after a failed smoke test. [SCREENSHOT07]  
+  ![Successful rollback after a failed smoke test](screenshots/SCREENSHOT07.png)
+
+  1. Successful promotion job. [SCREENSHOT08]
+  ![Successful promotion job](screenshots/SCREENSHOT08.png)
+
+  1. Successful cleanup job. [SCREENSHOT09]
+  ![Successful cleanup job](screenshots/SCREENSHOT09.png)
+
+  1. Only deploy on pushed to `master` branch. [SCREENSHOT10]
+  ![Only deploy on pushed to `master` branch.](screenshots/SCREENSHOT10.png)
+
+  1. Prometheus Graphs of EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
+  ![Prometheus Graphs](screenshots/SCREENSHOT04-EMAIL.png)
+
+  1. Alert that was sent by Prometheus. [SCREENSHOT11]
+  ![Alert that was sent by Prometheus](screenshots/SCREENSHOT12.png)
+
+  1. Other screenshots you may refer to at (screenshots/other-screenshots/). 
+  ![kvdb.io.migration](screenshots/other-screenshots/kvdb.io.migration.png)
+  ![migration.pg](screenshots/other-screenshots/migration.pg.png)
+  ![cloudformation-cli-initialstack](screenshots/other-screenshots/cloudformation-cli-initialstack.png)
+  ![revert-migrations-success](screenshots/other-screenshots/revert-migrations-success.png)
+  ![Prometheus-service-discovery](screenshots/other-screenshots/Prometheus-service-discovery.png)
+  ![Prometheus-alertmanager](screenshots/other-screenshots/Prometheus-alertmanager.png)
+  ![Prometheus-alert](screenshots/other-screenshots/Prometheus-alert.png)
+
+
+#### CI/CD Presentation 
+"presentation.pdf" (presentation.pdf) PDF format. 
 
 ### Built With
 
