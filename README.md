@@ -4,7 +4,7 @@
 - By: Fathi Ghaiati
 - fathi.ghaiati@gmail.com
 - August 2022 / September 2022
-- About: This is my udacity Advanced DevOps Nanodegree CICD graduation project
+- About: This project has submitted under my udacity Advanced DevOps Nanodegree Journey
 
 ### Objectives
 This project, is requested for the purpose to enable me to prove my mastery of the following learning objectives:
@@ -14,9 +14,7 @@ This project, is requested for the purpose to enable me to prove my mastery of t
 - Utilize a configuration management tool to accomplish deployment to cloud-based servers.
 - Surface critical server errors for diagnosis using centralized structured logging.
 
-![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
-
-### Guiding Instructions 
+### Project Requirements - Guiding Instructions 
 - starter project: [URL](https://github.com/udacity/cdond-c3-projectstarter)
 
 * [Selling CI/CD](instructions/0-selling-cicd.md)
@@ -29,7 +27,12 @@ This project, is requested for the purpose to enable me to prove my mastery of t
 
 #### urls(urls.txt)
 - A text file named `urls.txt` includes:
-  HINT: URL*_SCREENSHOT's urls may differ than latest urls submission as aws stops images automatically (brings it down) and when manually start instances aws changes the ip-address and image-link
+  - HINT: URL*_SCREENSHOT's urls may differ than latest urls submission as aws stops images automatically (brings it down) and when manually start instances aws changes the ip-address and image-link
+  - actions after aws changes ip-addresses
+  - get new endpoint/ip-address of backend server from aws
+  - ssh to prometheus server
+  - change end point in prometheus targets: sudo nano /etc/prometheus/prometheus.yml
+  - restart prometheus service: sudo systemctl restart prometheus
    
   1. Public Url to GitHub repository (not private) [URL01](https://github.com/fghaiati/uda-fg-cicd)
   ![URL01](screenshots/URL01_SCREENSHOT.png)
@@ -98,6 +101,26 @@ This project, is requested for the purpose to enable me to prove my mastery of t
   ![Prometheus-service-discovery](screenshots/other-screenshots/Prometheus-service-discovery.png)
   ![Prometheus-alertmanager](screenshots/other-screenshots/Prometheus-alertmanager.png)
   ![Prometheus-alert](screenshots/other-screenshots/Prometheus-alert.png)
+
+#### Imporvements added
+- utilize circleci commands feature:
+  * notify-on-failure
+  * notify-on-success
+  * install-awscli
+  * install-ansible
+  * install-nodejs 
+
+- multiple workflows with action parameter to enable partial run of the full workflow, this enable to unit-test ci/cd also benefit from if need to do specific set of jobs. 
+[
+parameters:
+  action:
+    type: enum
+    enum: [default, scan, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
+    default: deploy
+]
+
+- Used kvdb.io added key to use for continuo working on a specific workflow, suport previous improvement
+[curl -d "d684f7c" https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/workon_specific_workflow_id]
 
 
 #### CI/CD Presentation 

@@ -7,7 +7,7 @@ parameters:
   action:
     type: enum
     enum: [default, scan, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
-    default: scan
+    default: deploy
 
 commands:
   notify-on-failure:
