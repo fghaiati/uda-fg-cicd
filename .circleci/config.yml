@@ -540,7 +540,7 @@ jobs:
             aws cloudformation deploy \
               --stack-name InitialStack --profile udapeople\
               --template-file .circleci/files/cloudfront.yml \
-              --parameter-overrides WorkflowID="${UPDATE_TO_WORKFLOW_ID}" 
+              --parameter-overrides WorkflowID="${UPDATE_TO_WORKFLOW_ID}"  
       #- destroy-environment
       #- revert-migrations
       - notify-on-failure
