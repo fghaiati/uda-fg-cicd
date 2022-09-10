@@ -1,10 +1,10 @@
   . Public Url to GitHub repository (not private) 
     [URL01] (https://github.com/fghaiati/uda-fg-cicd)
 
-  . Public URLs for your S3 Bucket (aka, green candidate front-end) [URL02], may not be working if aws stopped backend (changed ip)
+  . Public URLs for your S3 Bucket (green candidate front-end) [URL02], may not be working if aws stopped backend (changed ip)
     [URL02] (http://udapeople-d684f7c.s3-website-us-east-1.amazonaws.com/#/employees)
 
-  . Public URL for your CloudFront distribution (aka, blue production front-end) [URL03]
+  . Public URL for your CloudFront distribution (blue production front-end) [URL03]
     [URL03] (https://d1iqqq9l78e2yj.cloudfront.net)
 
   . Public URLs to deployed application back-end in EC2 [URL04], may not be working if aws stopped / changed ip

@@ -28,19 +28,19 @@ This project, is requested for the purpose to enable me to prove my mastery of t
 #### urls(urls.txt)
 - A text file named `urls.txt` includes:
   - HINT: URL*_SCREENSHOT's urls may differ than latest urls submission as aws stops images automatically (brings it down) and when manually start instances aws changes the ip-address and image-link
-  - actions after aws changes ip-addresses
+` - actions after aws changes ip-addresses
   - get new endpoint/ip-address of backend server from aws
   - ssh to prometheus server
   - change end point in prometheus targets: sudo nano /etc/prometheus/prometheus.yml
-  - restart prometheus service: sudo systemctl restart prometheus
-   
+  - restart prometheus service: sudo systemctl restart prometheus`
+     
   1. Public Url to GitHub repository (not private) [URL01](https://github.com/fghaiati/uda-fg-cicd)
   ![URL01](screenshots/URL01_SCREENSHOT.png)
 
-  1. Public URL for the project's S3 Bucket (aka, your green candidate front-end) [URL02]
+  1. Public URL for the project's S3 Bucket (green candidate front-end) [URL02]
   ![URL02](screenshots/URL02_SCREENSHOT.png)
 
-  1. Public URL for the project's CloudFront distribution (aka, your blue production front-end) [URL03]
+  1. Public URL for the project's CloudFront distribution (blue production front-end) [URL03]
   ![URL03](screenshots/URL03_SCREENSHOT.png)
 
   1. Public URLs to deployed application back-end in EC2 [URL04]
@@ -88,11 +88,12 @@ This project, is requested for the purpose to enable me to prove my mastery of t
   ![Only deploy on pushed to `master` branch.](screenshots/SCREENSHOT10.png)
 
   1. Prometheus Graphs of EC2 instance including available memory, available disk space, and CPU usage. [SCREENSHOT11]
-  ![Prometheus Graphs](screenshots/SCREENSHOT04-EMAIL.png)
+  ![Prometheus Graphs](screenshots/SCREENSHOT11.png)
 
-  1. Alert that was sent by Prometheus. [SCREENSHOT11]
+  1. Alert that was sent by Prometheus. [SCREENSHOT12]
   ![Alert that was sent by Prometheus](screenshots/SCREENSHOT12.png)
 
+##### other-screenshots(screenshots/other-screenshots/)
   1. Other screenshots you may refer to at (screenshots/other-screenshots/). 
   ![kvdb.io.migration](screenshots/other-screenshots/kvdb.io.migration.png)
   ![migration.pg](screenshots/other-screenshots/migration.pg.png)
@@ -121,7 +122,6 @@ parameters:
 
 - Used kvdb.io added key to use for continuo working on a specific workflow, suport previous improvement
 [curl -d "d684f7c" https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/workon_specific_workflow_id]
-
 
 #### CI/CD Presentation 
 "presentation.pdf" (presentation.pdf) PDF format. 
