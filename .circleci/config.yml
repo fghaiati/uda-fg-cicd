@@ -249,6 +249,7 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --profile udapeople
+
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -273,7 +274,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
-      - destroy-environment
+      #- destroy-environment
       - notify-on-failure
 
   configure-infrastructure:
@@ -502,8 +503,8 @@ jobs:
             else
               exit 1
             fi
-      - destroy-environment
-      - revert-migrations
+      #- destroy-environment
+      #- revert-migrations
       - notify-on-failure
 
   cloudfront-update:
