@@ -7,7 +7,7 @@ parameters:
   action:
     type: enum
     enum: [default, scan, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
-    default: provision
+    default: default
 
 commands:
   notify-on-failure:
@@ -245,7 +245,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags project=your-tag \
+              --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --profile udapeople
@@ -255,7 +255,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --tags project=your-tag \
+              --tags project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --profile udapeople
