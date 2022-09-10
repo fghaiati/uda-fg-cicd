@@ -41,15 +41,23 @@ This project, is requested for the purpose to enable me to prove my mastery of t
 
   1. Public URL for the project's S3 Bucket (green candidate front-end) [URL02]
   ![URL02](screenshots/URL02_SCREENSHOT.png)
+  **screenshots/URL02_SCREENSHOT-10-sep-2022**
+  ![URL02](screenshots/URL02_SCREENSHOT-10-sep-2022.png)
+
 
   1. Public URL for the project's CloudFront distribution (blue production front-end) [URL03]
   ![URL03](screenshots/URL03_SCREENSHOT.png)
 
   1. Public URLs to deployed application back-end in EC2 [URL04]
   ![URL04](screenshots/URL04_SCREENSHOT.png)
+  **URL04_SCREENSHOT-10-sep-22**
+  ![URL04](screenshots/URL04_SCREENSHOT-10-sep-22.png)
+
 
   1. Public URL to the project's Prometheus Server [URL05]
   ![URL05](screenshots/URL05_SCREENSHOT.png)
+  **URL05_SCREENSHOT-10-sep-22**
+  ![URL05](screenshots/URL05_SCREENSHOT-10-sep-22.png)
 
 
 #### screenshots(screenshots/)

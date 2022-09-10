@@ -5,6 +5,8 @@
 .aws/
 
 .local.README.md
+.local/
+presentation.pptx
 
 # Logs
 logs
