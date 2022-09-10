@@ -1,10 +1,10 @@
 ## Udacity Advanced DevOps Nanodegree 3rd Project
 ## Give Your Application Auto-Deploy Superpowers Project
  
-> By: Fathi Ghaiati
-> fathi.ghaiati@gmail.com
-> August 2022 / September 2022
-> About: This project has submitted under my udacity Advanced DevOps Nanodegree Journey
+> - By: Fathi Ghaiati
+> - fathi.ghaiati@gmail.com
+> - August 2022 / September 2022
+> - About: This project has submitted under my udacity Advanced DevOps Nanodegree Journey
 
 ### Objectives
 This project, is requested for the purpose to enable me to prove my mastery of the following learning objectives:
@@ -96,7 +96,7 @@ This project, is requested for the purpose to enable me to prove my mastery of t
   ![Alert that was sent by Prometheus](screenshots/SCREENSHOT12.png)
 
 ##### other-screenshots(screenshots/other-screenshots/)
-  ** Other screenshots - refer to at (screenshots/other-screenshots/) ** 
+  **Other screenshots - refer to at (screenshots/other-screenshots/)** 
   ![kvdb.io.migration](screenshots/other-screenshots/kvdb.io.migration.png)
   ![migration.pg](screenshots/other-screenshots/migration.pg.png)
   ![cloudformation-cli-initialstack](screenshots/other-screenshots/cloudformation-cli-initialstack.png)
@@ -126,7 +126,7 @@ parameters:
 
 **- Used kvdb.io added key to use for continuo working on a specific workflow, suport previous improvement**
 ```
-[curl -d "d684f7c" https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/workon_specific_workflow_id]
+curl -d "d684f7c" https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/workon_specific_workflow_id
 ```
 
 #### CI/CD Presentation 
