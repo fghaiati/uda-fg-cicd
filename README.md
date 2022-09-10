@@ -1,10 +1,10 @@
 ## Udacity Advanced DevOps Nanodegree 3rd Project
 ## Give Your Application Auto-Deploy Superpowers Project
  
-- By: Fathi Ghaiati
-- fathi.ghaiati@gmail.com
-- August 2022 / September 2022
-- About: This project has submitted under my udacity Advanced DevOps Nanodegree Journey
+>- By: Fathi Ghaiati
+>- fathi.ghaiati@gmail.com
+>- August 2022 / September 2022
+>- About: This project has submitted under my udacity Advanced DevOps Nanodegree Journey
 
 ### Objectives
 This project, is requested for the purpose to enable me to prove my mastery of the following learning objectives:
@@ -27,12 +27,14 @@ This project, is requested for the purpose to enable me to prove my mastery of t
 
 #### urls(urls.txt)
 - A text file named `urls.txt` includes:
-  - HINT: URL*_SCREENSHOT's urls may differ than latest urls submission as aws stops images automatically (brings it down) and when manually start instances aws changes the ip-address and image-link
-` - actions after aws changes ip-addresses
+  > HINT: URL*_SCREENSHOT's urls may differ than latest urls submission as aws stops images automatically (brings it down) and when manually start instances aws changes the ip-address and image-link
+```
+  - actions after aws changes ip-addresses
   - get new endpoint/ip-address of backend server from aws
   - ssh to prometheus server
   - change end point in prometheus targets: sudo nano /etc/prometheus/prometheus.yml
-  - restart prometheus service: sudo systemctl restart prometheus`
+  - restart prometheus service: sudo systemctl restart prometheus
+```
      
   1. Public Url to GitHub repository (not private) [URL01](https://github.com/fghaiati/uda-fg-cicd)
   ![URL01](screenshots/URL01_SCREENSHOT.png)
@@ -94,7 +96,7 @@ This project, is requested for the purpose to enable me to prove my mastery of t
   ![Alert that was sent by Prometheus](screenshots/SCREENSHOT12.png)
 
 ##### other-screenshots(screenshots/other-screenshots/)
-  1. Other screenshots you may refer to at (screenshots/other-screenshots/). 
+  ** Other screenshots - refer to at (screenshots/other-screenshots/) ** 
   ![kvdb.io.migration](screenshots/other-screenshots/kvdb.io.migration.png)
   ![migration.pg](screenshots/other-screenshots/migration.pg.png)
   ![cloudformation-cli-initialstack](screenshots/other-screenshots/cloudformation-cli-initialstack.png)
@@ -104,24 +106,26 @@ This project, is requested for the purpose to enable me to prove my mastery of t
   ![Prometheus-alert](screenshots/other-screenshots/Prometheus-alert.png)
 
 #### Imporvements added
-- utilize circleci commands feature:
+**- utilize circleci commands feature:**
   * notify-on-failure
   * notify-on-success
   * install-awscli
   * install-ansible
   * install-nodejs 
 
-- multiple workflows with action parameter to enable partial run of the full workflow, this enable to unit-test ci/cd also benefit from if need to do specific set of jobs. 
-[
+**- multiple workflows with action parameter to enable partial run of the full workflow, this enable to unit-test ci/cd also benefit from if need to do specific set of jobs. **
+```
 parameters:
   action:
     type: enum
     enum: [default, scan, provision, configure-infrastructure, deploy-frontend, deploy, smoke-test, cleanup, force-destroy]
     default: deploy
-]
+```
 
-- Used kvdb.io added key to use for continuo working on a specific workflow, suport previous improvement
+**- Used kvdb.io added key to use for continuo working on a specific workflow, suport previous improvement **
+```
 [curl -d "d684f7c" https://kvdb.io/6LGVUmfMFMbPAGkm3aLBkb/workon_specific_workflow_id]
+```
 
 #### CI/CD Presentation 
 "presentation.pdf" (presentation.pdf) PDF format. 
