@@ -7,7 +7,11 @@
     
 
   . Public URL for your CloudFront distribution (blue production front-end) [URL03]
-    [URL03] (https://d1iqqq9l78e2yj.cloudfront.net)
+    [URL03] (http://d1x0k2mk4jou3g.cloudfront.net)  Latest runing 11-Sep-2022
+    [URL03] (screenshots/URL03_SCREENSHOT_11-sep-2022.png)
+    **CloudFront distribution running**
+    [URL03] (screenshots/URL03_SCREENSHOT_RUN_11-sep-2022.png)
+
 
   . Public URLs to deployed application back-end in EC2 [URL04], may not be working if aws stopped / changed ip
     [URL04] (http://52.201.218.145:3030/api/status)  Latest runing 10-Sep-2022

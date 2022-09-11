@@ -46,7 +46,10 @@ This project, is requested for the purpose to enable me to prove my mastery of t
 
 
   1. Public URL for the project's CloudFront distribution (blue production front-end) [URL03]
-  ![URL03](screenshots/URL03_SCREENSHOT.png)
+  (http://d1x0k2mk4jou3g.cloudfront.net)  Latest runing 11-Sep-2022
+  ![URL03](screenshots/URL03_SCREENSHOT_11-sep-2022.png)
+  **CloudFront distribution running**
+  ![URL03](screenshots/URL03_SCREENSHOT_RUN_11-sep-2022.png)
 
   1. Public URLs to deployed application back-end in EC2 [URL04]
   ![URL04](screenshots/URL04_SCREENSHOT.png)
