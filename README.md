@@ -39,6 +39,8 @@ This project, is requested for the purpose to enable me to prove my mastery of t
   1. Public Url to GitHub repository (not private) [URL01](https://github.com/fghaiati/uda-fg-cicd)
   ![URL01](screenshots/URL01_SCREENSHOT.png)
 
+  1. Sample CircleCi pipeline execution Url [URL01-CircleCi](https://app.circleci.com/pipelines/github/fghaiati/uda-fg-cicd/188/workflows/0434ce0e-12d1-4774-8b7c-a3c93f4d3b30)
+  
   1. Public URL for the project's S3 Bucket (green candidate front-end) [URL02]
   ![URL02](screenshots/URL02_SCREENSHOT.png)
   **screenshots/URL02_SCREENSHOT-10-sep-2022**
